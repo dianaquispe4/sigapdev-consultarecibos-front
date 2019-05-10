@@ -16,8 +16,12 @@ class AR_tableHeaderPendientes extends React.Component {
                     <th className="th">Recibo</th>
                     <th className="th">Moneda</th>
                     <th className="th">Importe</th>
-                    <th className="th">Fecha</th>
+                    <th className="th">Fecha</th>                    
                     <th className="th">Estado</th>
+
+                    <th className="th">Código Alumno</th>
+                    <th className="th">Programa</th>
+
                     <th className="th">Codigo / Programa a escoger</th>
                     <th className="th">Buscar</th>
                     <th className="th">Guardar</th>

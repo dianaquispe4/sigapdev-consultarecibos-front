@@ -1,6 +1,7 @@
 import React from 'react'
 import Select from 'react-select'
 import AR_tableHeaderPendientes from './AR_TableHeaderPendientes';
+import AR_EstadoAsignacion from './AR_EstadoAsginacion';
 
 class AR_PendienteAsignacion extends React.Component {
 
@@ -29,7 +30,15 @@ class AR_PendienteAsignacion extends React.Component {
                                         <td className="td1">{recaudaciones.moneda}</td>
                                         <td className="td1">{recaudaciones.importe}</td>
                                         <td className="td1">{recaudaciones.fecha}</td>
-                                        <td className="td1"></td>
+                                        
+                                        <td className="td1">
+                                                <AR_EstadoAsignacion estadoAsignacion={recaudaciones.estado} />
+                                        </td>
+                                        
+                                        <td className="td1">{recaudaciones.codAlumno}</td>
+                                        
+                                        <td className="td1">{recaudaciones.programa}</td>
+
                                         <td className="td1">
                                             <form>
                                                 <div className="row justify-content-md-center">

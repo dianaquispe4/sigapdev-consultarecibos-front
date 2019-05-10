@@ -2,36 +2,43 @@ import React from 'react'
 import '../App.css';
 import Select from 'react-select'
 import swal from 'sweetalert'
-import CONFIG1 from '../Configuracion/Config1';
+import CONFIG from '../Configuracion/Config';
 import AR_tableHeaderRecibo from './AR_tableHeaderRecibo'
+import AR_tableHeaderReciboResultado from './AR_tableHeaderReciboResultado'
+import AR_CodigoAsignacion from './AR_CodigoAsignacion'
+import AR_ReciboResultadoAlumnos from './AR_ReciboResultadoAlumnos'
 import AR_EstadoAsignacion from './AR_EstadoAsginacion'
+import AR_ProgramaAsignacion from './AR_ProgramaAsignacion'
 import AR_PendienteAsignacion from './AR_PendienteAsignacion';
 
 const opciones = [
-    {value: 'Búsqueda por nombre', label: 'Búsqueda por nombre'},
-    {value: 'Búsqueda por recibo', label: 'Búsqueda por recibo'},
-    {value: 'Pendiente de asignación', label: 'Pendiente de asignación'}
+    { value: 'Búsqueda por nombre', label: 'Búsqueda por nombre' },
+    { value: 'Búsqueda por recibo', label: 'Búsqueda por recibo' },
+    { value: 'Pendiente de asignación', label: 'Pendiente de asignación' }
 ];
 
 class BuscarNuevo extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
-            value: {value: 'Búsqueda por nombre', label: 'Búsqueda por nombre'},
+            value: { value: 'Búsqueda por nombre', label: 'Búsqueda por nombre' },
             nomB: true,
             recB: false,
             posgradoB: false,
 
             objRecaudaciones: [],
-            objAlumnos: [],			
+            objAlumnos: [],
             ObjAsignación: [],
 
             objPendienteAsignacion: [],
 
+            buscarRecAlum: false,
             buscarRec: false,
-            asignarRec: false,            
+            asignarRec: false,
+
+            mostrarResultadoAlumnos: false,
 
             dni: '',
             codigo: '',
@@ -53,11 +60,15 @@ class BuscarNuevo extends React.Component {
                 importe: '',
                 fecha: '',
                 estado: '',
-                codAlumno: '',
-                programa: '',
+                codAlum: '',//m
+                idProg: '',//m
+                siglaPrograma: '',//m
             },
 
             estado: false,
+            nomProg: '',
+
+            buscarPendiente: false,
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -92,37 +103,45 @@ class BuscarNuevo extends React.Component {
     }
 
     handleChange = (selectedOption) => {
-        if(selectedOption.value == 'Búsqueda por nombre'){
+        if (selectedOption.value == 'Búsqueda por nombre') {
             this.setState({
                 value: selectedOption,
                 nomB: true,
                 recB: false,
+                buscarRecAlum: false,
                 posgradoB: false,
                 buscarRec: false,
                 asignarRec: false,
+                buscarPendiente: false,
+                mostrarResultadoAlumnos: false,
             });
-            this.props.flag (false);
-        } else if(selectedOption.value == 'Búsqueda por recibo'){
+            this.props.flag(false);
+        } else if (selectedOption.value == 'Búsqueda por recibo') {
             this.setState({
                 value: selectedOption,
                 nomB: false,
                 recB: true,
+                buscarRecAlum: false,
                 posgradoB: false,
                 buscarRec: false,
                 asignarRec: false,
+                buscarPendiente: false,
+                mostrarResultadoAlumnos: false,
             });
-            this.props.flag (false);
-        } else if(selectedOption.value == 'Pendiente de asignación'){
+            this.props.flag(false);
+        } else if (selectedOption.value == 'Pendiente de asignación') {
             this.setState({
                 value: selectedOption,
                 nomB: false,
                 recB: false,
+                buscarRecAlum: false,
                 posgradoB: true,
                 buscarRec: false,
                 asignarRec: false,
+                buscarPendiente: false,
+                mostrarResultadoAlumnos: false,
             });
-            this.props.flag (false);
-            this.onSubmitRecaudaciones();
+            this.props.flag(false);
         }
     }
 
@@ -133,28 +152,20 @@ class BuscarNuevo extends React.Component {
     }
 
     onSubmitNombre = (e) => {
-        var nombres = this.nombre.value.toUpperCase();
-        if(!nombres){
-            swal("Ingrese nombre apellido a buscar", "", "info");
-        } else{
-            var busqueda = {nombres: nombres};
-            this.props.flag(true);
-            this.props.Busqueda(busqueda);
-        }
+        
         e.preventDefault();
-    }
-
-    onSubmitRecibo = (e) => {
-        var rec = this.recibo.value;
-        if(!rec){
-            swal("Ingrese numero de recibo a buscar", " ", "info");
-        } else{
+        var rec = this.nombre.value;
+        if (!rec) {
+            swal("Ingrese primer apellido y primer nombre a buscar", " ", "info");
+        } else {
+            /* Setear correctamente el stado ya que aqui de frente le ponen false */
             this.setState({
                 objRecaudaciones: [],
-                objAlumnos: [],				
+                objAlumnos: [],
                 ObjAsignación: [],
                 buscarRec: false,
                 asignarRec: false,
+                mostrarResultadoAlumnos: false,
                 estado: false,
                 alumno: null,
                 opcAlumno: [],
@@ -164,7 +175,9 @@ class BuscarNuevo extends React.Component {
                 apeMat: '',
                 nombre: '',
             })
-            fetch(CONFIG1 + 'recaudaciones/rec/' + rec)
+            //alert("Prueba de estado global "+this.state.estado);/*-------------------------------------------*/
+            //fetch(CONFIG + 'recaudaciones/rec/' + rec)
+            fetch(CONFIG + 'recaudaciones/listar/NombreApellido/' + rec)
                 .then((response) => {
                     return response.json();
                 })
@@ -176,32 +189,30 @@ class BuscarNuevo extends React.Component {
                     });
                     console.log("---ObjRecaudaciones---");
                     console.log(this.state.objRecaudaciones);
-                    if(this.state.objRecaudaciones.length > 0){
-                       this.getDetalleRecaudaciones(this.state.objRecaudaciones);
-                       /* //this.buscarApellidoNombre(this.state.objRecaudaciones[0].apeNom, ' ', ' ', e);
-                       this.buscarCodigoAlumnoPrograma(this.state.objRecaudaciones[0].codAlum, this.state.objRecaudaciones[0].idProg,e);
-                        
-                        console.log("---ObjAlumnos---");
-                        console.log(this.state.objAlumnos);*/
+                    if (this.state.objRecaudaciones.length > 0) {
+                        this.getDetalleRecaudaciones(this.state.objRecaudaciones);
+                        //this.buscarApellidoNombre(this.state.objRecaudaciones[0].apeNom, ' ', ' ', e);
+                        this.buscarCodigoAlumnoPrograma(this.state.objRecaudaciones[0].codAlum, this.state.objRecaudaciones[0].idProg, e);
 
-                       /* this.setState({
-                            buscarRec: true,
-                        });*/
-                       /* if(this.state.objAlumnos.length = 0)
-                        {
+                        console.log("---ObjAlumnos---");
+
+                        this.setState({
+                            buscarRecAlum: true,
+                        });
+                        if (this.state.objAlumnos.length = 0) {
 
                             this.buscarApellidoNombre(this.state.objRecaudaciones[0].apeNom, ' ', ' ', e);
                             this.setState({
-                            buscarRec: true,
+                                buscarRecAlum: true,
                             });
 
                         }
 
                         console.log("---ObjAlumnos---");
                         console.log(this.state.objAlumnos);
-*/
 
-                       /* fetch(CONFIG1 + 'alumnoprograma/buscarc/' + this.state.objRecaudaciones[0].codAlum)
+
+                        fetch(CONFIG + 'alumnoprograma/buscarc/' + this.state.objRecaudaciones[0].codAlum)
                             .then((response) => {
                                 return response.json();
                             })
@@ -209,26 +220,129 @@ class BuscarNuevo extends React.Component {
                                 console.log("---Alumnos---");
                                 console.log(alumnos);
                                 this.setState({
-                                    objAlumnos: alumnos
+                                    objAlumnos: alumnos,
                                 });
-                                console.log("---ObjAlumnos---");
-                                console.log(this.state.objAlumnos);
-								console.log(this.state.detalleRecaudaciones);
-								
-								if(this.state.objAlumnos.length > 0){
-                                                this.setState({
-                                                    estado: true,
-                                                });
-                                                swal("Este numero ya ha sido asignado", "", "success");
-                                            }else{
-                                                console.log("Array de ObjAlumnos está vació: seguimiento 1");
-                                            }
-                                
+                                console.log("---ObjAlumnosAAAA---");
+                                console.log("---NOMBRE PROGRAMAAA---");
+                                console.log(this.state.detalleRecaudaciones.siglaPrograma);
+
+
+                                if (this.state.objAlumnos.length > 0) {
+                                    this.setState({
+                                        estado: true,
+                                    });
+                                    swal("Este alumno ya ha sido asignado", "", "success");
+                                } else {
+                                    console.log("Array de ObjAlumnos está vació: seguimiento 1");
+                                }
+
                             })
                             .catch((error) => {
                                 console.log(error);
-                        });*/
-                    } else{
+                            });
+                    } else {
+                        console.log("Array de ObjRecaudaciones está vació: seguimiento 2");
+                        swal("Apellidos incorrecto", "", "warning");
+                    }
+                })
+                .catch((error) => {
+                    this.setState({
+                        buscarRecAlum: false
+                    });
+                    swal("Algo salió mal", "", "warning")
+                    console.log(error);
+                });
+        }
+
+    }
+
+    onSubmitRecibo = (e) => {
+        var rec = this.recibo.value;
+        if (!rec) {
+            swal("Ingrese numero de recibo a buscar", " ", "info");
+        } else {
+            /* Setear correctamente el stado ya que aqui de frente le ponen false */
+            this.setState({
+                objRecaudaciones: [],
+                objAlumnos: [],
+                ObjAsignación: [],
+                buscarRec: false,
+                asignarRec: false,
+                mostrarResultadoAlumnos: false,
+                estado: false,
+                alumno: null,
+                opcAlumno: [],
+                dni: '',
+                codigo: '',
+                apePat: '',
+                apeMat: '',
+                nombre: '',
+            })
+            //alert("Prueba de estado global "+this.state.estado);/*-------------------------------------------*/
+            fetch(CONFIG + 'recaudaciones/rec/' + rec)
+                .then((response) => {
+                    return response.json();
+                })
+                .then((recaudaciones) => {
+                    console.log("---Recaudaciones---");
+                    console.log(recaudaciones);
+                    this.setState({
+                        objRecaudaciones: recaudaciones
+                    });
+                    console.log("---ObjRecaudaciones---");
+                    console.log(this.state.objRecaudaciones);
+                    if (this.state.objRecaudaciones.length > 0) {
+                        this.getDetalleRecaudaciones(this.state.objRecaudaciones);
+                        //this.buscarApellidoNombre(this.state.objRecaudaciones[0].apeNom, ' ', ' ', e);
+                        this.buscarCodigoAlumnoPrograma(this.state.objRecaudaciones[0].codAlum, this.state.objRecaudaciones[0].idProg, e);
+
+                        console.log("---ObjAlumnos---");
+
+                        this.setState({
+                            buscarRec: true,
+                        });
+                        if (this.state.objAlumnos.length = 0) {
+
+                            this.buscarApellidoNombre(this.state.objRecaudaciones[0].apeNom, ' ', ' ', e);
+                            this.setState({
+                                buscarRec: true,
+                            });
+
+                        }
+
+                        console.log("---ObjAlumnos---");
+                        console.log(this.state.objAlumnos);
+
+
+                        fetch(CONFIG + 'alumnoprograma/buscarc/' + this.state.objRecaudaciones[0].codAlum)
+                            .then((response) => {
+                                return response.json();
+                            })
+                            .then((alumnos) => {
+                                console.log("---Alumnos---");
+                                console.log(alumnos);
+                                this.setState({
+                                    objAlumnos: alumnos,
+                                });
+                                console.log("---ObjAlumnosAAAA---");
+                                console.log("---NOMBRE PROGRAMAAA---");
+                                console.log(this.state.detalleRecaudaciones.siglaPrograma);
+
+
+                                if (this.state.objAlumnos.length > 0) {
+                                    this.setState({
+                                        estado: true,
+                                    });
+                                    swal("Este numero ya ha sido asignado", "", "success");
+                                } else {
+                                    console.log("Array de ObjAlumnos está vació: seguimiento 1");
+                                }
+
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                            });
+                    } else {
                         console.log("Array de ObjRecaudaciones está vació: seguimiento 2");
                         swal("Número de recibo incorrecto", "", "warning");
                     }
@@ -245,83 +359,146 @@ class BuscarNuevo extends React.Component {
     }
 
     onSubmitRecaudaciones = (e) => {
-        fetch(CONFIG1 + 'recaudaciones/listar/posgrado')
-            .then((response) => {
-                return response.json();
+        var fechaInicio = this.fechaInicio.value;
+        var fechaFin = this.fechaFin.value;
+
+        if (!fechaInicio && !fechaFin) {
+            swal("Ingrese lafecha a buscar", " ", "info");
+        } else {
+            this.setState({
+                objRecaudaciones: [],
+                objAlumnos: [],
+                ObjAsignación: [],
+                posgradoB: true,
+                buscarPendiente: true,
+                buscarRecAlum: false,
+                buscarRec: false,
+                asignarRec: false,
+                estado: false,
+                alumno: null,
+                opcAlumno: [],
+                dni: '',
+                codigo: '',
+                apePat: '',
+                apeMat: '',
+                nombre: '',
             })
-            .then((pendienteAsignacion) => {
-                console.log("---PendienteAsignacion---");
-                console.log(pendienteAsignacion);
 
-                var lista = [];
-                for(let i = 0; i < pendienteAsignacion.length; i++){
-                    var listadoRec = { 
-                        apeNom:'',
-                        concepto: '',
-                        fecha: '',
-                        id_rec: '',
-                        numero: '',
-                        idAlum : '',
-                        moneda: '',
-                        importe: ''
-                    }
-
-                    if(pendienteAsignacion[i].moneda == '108'){
-
-                        listadoRec.apeNom = pendienteAsignacion[i].ape_nom;
-                        listadoRec.concepto = pendienteAsignacion[i].concepto;
-                        listadoRec.fecha = pendienteAsignacion[i].fecha;
-                        listadoRec.id_rec = pendienteAsignacion[i].id_rec;
-                        listadoRec.numero = pendienteAsignacion[i].numero;
-                        listadoRec.idAlum = pendienteAsignacion[i].id_alum;
-                        listadoRec.moneda = 'SOL';
-                        listadoRec.importe = 'S/' + pendienteAsignacion[i].importe;
-              
-                    } else if(pendienteAsignacion[i].moneda == '113'){
-              
-                        listadoRec.apeNom = pendienteAsignacion[i].ape_nom;
-                        listadoRec.concepto = pendienteAsignacion[i].concepto;
-                        listadoRec.fecha = pendienteAsignacion[i].fecha;
-                        listadoRec.id_rec = pendienteAsignacion[i].id_rec;
-                        listadoRec.numero = pendienteAsignacion[i].numero;
-                        listadoRec.idAlum = pendienteAsignacion[i].id_alum;
-                        listadoRec.moneda = 'DOL';
-                        listadoRec.importe = '$ ' + pendienteAsignacion[i].importe;
-              
-                    } else{
-              
-                        listadoRec.apeNom = pendienteAsignacion[i].ape_nom;
-                        listadoRec.concepto = pendienteAsignacion[i].concepto;
-                        listadoRec.fecha = pendienteAsignacion[i].fecha;
-                        listadoRec.id_rec = pendienteAsignacion[i].id_rec;
-                        listadoRec.numero = pendienteAsignacion[i].numero;
-                        listadoRec.idAlum = pendienteAsignacion[i].id_alum;
-                        listadoRec.moneda = ' ';
-                        listadoRec.importe = pendienteAsignacion[i].importe;
-              
-                    }
-                    lista.push(listadoRec);
-
-                }
-
-                this.setState({
-                    objPendienteAsignacion: lista,
+            fetch(CONFIG + '/recaudaciones/listarPendientes/' + fechaInicio + '/' + fechaFin)/*PONER PARAMETROS LAS FECHAS Y LISTO*/
+                .then((response) => {
+                    return response.json();
                 })
-                console.log("---ObjPendienteAsignacion---");
-                console.log(this.state.objPendienteAsignacion);
-                if(this.state.objPendienteAsignacion.length > 0){
-                    swal("Consulta realizada exitosamente", " ", "success");
-                }else{
-                    swal("No hay pendientes por asignación", " ", "info")
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            })
+                .then((pendienteAsignacion) => {
+                    console.log("---PendienteAsignacion---");
+                    console.log(pendienteAsignacion);
+
+
+                    var lista = [];
+                    for (let i = 0; i < pendienteAsignacion.length; i++) {
+                        var listadoRec = {
+                            apeNom: '',
+                            concepto: '',
+                            fecha: '',
+                            id_rec: '',
+                            numero: '',
+                            idAlum: '',
+                            moneda: '',
+                            importe: '',
+                            estado: '',
+                            codAlumno: '',//m
+                            programa: ''//m
+                        }
+
+                        let pendiente_estado;
+                        if (pendienteAsignacion[i].codAlumno != null) {
+                            pendiente_estado = "true";
+                        } else {
+                            pendiente_estado = "false";
+                        }
+
+                        if (pendienteAsignacion[i].moneda == '108') {
+
+                            listadoRec.apeNom = pendienteAsignacion[i].apeNom;
+                            listadoRec.concepto = pendienteAsignacion[i].concepto;
+                            listadoRec.fecha = pendienteAsignacion[i].fecha;
+                            listadoRec.id_rec = pendienteAsignacion[i].id_rec;
+                            listadoRec.numero = pendienteAsignacion[i].numero;
+                            listadoRec.idAlum = pendienteAsignacion[i].id_alum;
+                            listadoRec.moneda = 'SOL';
+                            listadoRec.importe = 'S/' + pendienteAsignacion[i].importe;
+                            listadoRec.estado = pendiente_estado;//m
+                            listadoRec.codAlumno = pendienteAsignacion[i].codAlumno;//m
+                            listadoRec.programa = pendienteAsignacion[i].programa;//m
+
+                        } else if (pendienteAsignacion[i].moneda == '113') {
+
+                            listadoRec.apeNom = pendienteAsignacion[i].apeNom;
+                            listadoRec.concepto = pendienteAsignacion[i].concepto;
+                            listadoRec.fecha = pendienteAsignacion[i].fecha;
+                            listadoRec.id_rec = pendienteAsignacion[i].id_rec;
+                            listadoRec.numero = pendienteAsignacion[i].numero;
+                            listadoRec.idAlum = pendienteAsignacion[i].id_alum;
+                            listadoRec.moneda = 'DOL';
+                            listadoRec.importe = '$ ' + pendienteAsignacion[i].importe;
+                            listadoRec.estado = pendiente_estado;//m
+                            listadoRec.codAlumno = pendienteAsignacion[i].codAlumno;//m
+                            listadoRec.programa = pendienteAsignacion[i].programa;//m
+
+                        } else {
+
+                            listadoRec.apeNom = pendienteAsignacion[i].apeNom;
+                            listadoRec.concepto = pendienteAsignacion[i].concepto;
+                            listadoRec.fecha = pendienteAsignacion[i].fecha;
+                            listadoRec.id_rec = pendienteAsignacion[i].id_rec;
+                            listadoRec.numero = pendienteAsignacion[i].numero;
+                            listadoRec.idAlum = pendienteAsignacion[i].id_alum;
+                            listadoRec.moneda = ' ';
+                            listadoRec.importe = pendienteAsignacion[i].importe;
+                            listadoRec.estado = pendiente_estado;//m
+                            listadoRec.codAlumno = pendienteAsignacion[i].codAlumno;//m
+                            listadoRec.programa = pendienteAsignacion[i].programa;//m
+                        }
+                        lista.push(listadoRec);
+
+                    }
+
+                    this.setState({
+                        objPendienteAsignacion: lista,
+                    })
+                    console.log("---ObjPendienteAsignacion---");
+                    console.log(this.state.objPendienteAsignacion);
+                    if (this.state.objPendienteAsignacion.length > 0) {
+                        this.setState({
+                            buscarPendiente: true
+                        });
+                        swal("Consulta realizada exitosamente", " ", "success");
+                    } else {
+                        this.setState({
+                            buscarPendiente: false
+                        });
+                        swal("No hay pendientes por asignación", " ", "info")
+                    }
+                })
+                .catch((error) => {
+                    this.setState({
+                        buscarPendiente: false
+                    });
+                    console.log(error);
+                })
+        }
+
+        e.preventDefault();
     }
 
     getDetalleRecaudaciones = (objRec) => {
-        if(objRec[0].moneda == '108'){
+        let objRecibo_estado;
+        if (objRec[0].codAlum != null) {
+            objRecibo_estado = "true";
+        } else {
+            objRecibo_estado = "false";
+        }
+        if (objRec[0].moneda == '108') {
+
             this.setState({
                 detalleRecaudaciones: {
                     apeNom: objRec[0].apeNom,
@@ -330,12 +507,13 @@ class BuscarNuevo extends React.Component {
                     moneda: 'SOL',
                     importe: 'S/ ' + objRec[0].importe,
                     fecha: objRec[0].fecha,
-                    estado: objRec[0].estado,
-                    codAlumno: objRec[0].codAlumno,
-                    programa: objRec[0].programa
+                    estado: objRecibo_estado,
+                    codAlumno: objRec[0].codAlum,//m
+                    programa: objRec[0].idProg,//m
+                    siglaPrograma: objRec[0].siglaProg,//m
                 }
             });
-        } else if(objRec[0].moneda == '113'){
+        } else if (objRec[0].moneda == '113') {
             this.setState({
                 detalleRecaudaciones: {
                     apeNom: objRec[0].apeNom,
@@ -344,12 +522,13 @@ class BuscarNuevo extends React.Component {
                     moneda: 'DOL',
                     importe: '$ ' + objRec[0].importe,
                     fecha: objRec[0].fecha,
-                    estado: objRec[0].estado,
-                    codAlumno: objRec[0].codAlumno,
-                    programa: objRec[0].programa
+                    estado: objRecibo_estado,
+                    codAlumno: objRec[0].codAlum,//m
+                    programa: objRec[0].idProg,//m
+                    siglaPrograma: objRec[0].siglaProg,//m
                 }
             });
-        } else{
+        } else {
             this.setState({
                 detalleRecaudaciones: {
                     apeNom: objRec[0].apeNom,
@@ -358,61 +537,47 @@ class BuscarNuevo extends React.Component {
                     moneda: ' ',
                     importe: objRec[0].importe,
                     fecha: objRec[0].fecha,
-                    estado: objRec[0].estado,
-                    codAlumno: objRec[0].codAlumno,
-                    programa: objRec[0].programa
+                    estado: objRecibo_estado,
+                    codAlumno: objRec[0].codAlum,//m
+                    programa: objRec[0].idProg,//m
+                    siglaPrograma: objRec[0].siglaProg,//m
                 }
             });
         }
     }
- 
+
     onClickBuscar = (e) => {
         this.setState({
             asignarRec: true,
         });
         e.preventDefault();
-    } 
+    }
 
-    render () {
+    render() {
         return (
             <div>
                 <div className="col-xs-3">
-                    <Select value={this.state.value} onChange={this.handleChange} options={opciones}/>
+                    <Select value={this.state.value} onChange={this.handleChange} options={opciones} />
                 </div>
-                {this.state.nomB?(
-                    <form>
-                        <div className="SplitPane row">
-                            <div className="col-xs-3 margen2">
-                                <input ref={ ( input ) => this.nombre = input } type="text" maxLength="100" placeholder="Nombres Apelllidos" /> 
-                            </div>
-                            <div className="col-xs-2 margen2">
-                                <button  className="waves-effect waves-light btn-large center" type="submit" onClick={this.onSubmitNombre}>
-                                    Buscar
-                                    <i className="large material-icons left">search</i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                ): (null)}
-                {this.state.recB?(
+                {this.state.nomB ? (
                     <div>
                         <form>
                             <div className="SplitPane row">
                                 <div className="col-xs-3 margen2">
-                                    <input ref={ ( input ) => this.recibo = input } type="text" maxLength="100" placeholder="Número de recibo" /> 
+                                    <input ref={(input) => this.nombre = input} type="text" maxLength="100" placeholder="Apelllido Paterno Apelllido Materno" />
                                 </div>
                                 <div className="col-xs-2 margen2">
-                                    <button  className="waves-effect waves-light btn-large center" type="submit" onClick={this.onSubmitRecibo}>
+                                    <button className="waves-effect waves-light btn-large center" type="submit" onClick={this.onSubmitNombre}>
                                         Buscar
-                                        <i className="large material-icons left">search</i>
+                                    <i className="large material-icons left">search</i>
                                     </button>
                                 </div>
                             </div>
                         </form>
-                        {this.state.buscarRec?(
+                        {this.state.buscarRecAlum ? (
                             <div className="row justify-content-md-center">
                                 <table className="table">
-                                    <AR_tableHeaderRecibo/>
+                                    <AR_tableHeaderRecibo />
                                     <tbody>
                                         <tr>
                                             <td className="td1">{1}</td>
@@ -422,14 +587,23 @@ class BuscarNuevo extends React.Component {
                                             <td className="td1">{this.state.detalleRecaudaciones.moneda}</td>
                                             <td className="td1">{this.state.detalleRecaudaciones.importe}</td>
                                             <td className="td1">{this.state.detalleRecaudaciones.fecha}</td>
+
                                             <td className="td1">
-                                                <AR_EstadoAsignacion estadoAsignacion={this.state.estado} recibo={this.state.objRecaudaciones} alumno={this.state.objAlumnos} asignado={this.state.ObjAsignación}/>
+                                                <AR_CodigoAsignacion codAlum={this.state.detalleRecaudaciones.codAlumno} />
+                                            </td>
+
+                                            <td className="td1">
+                                                <AR_ProgramaAsignacion siglaPrograma={this.state.detalleRecaudaciones.siglaPrograma} />
+                                            </td>
+
+                                            <td className="td1">
+                                                <AR_EstadoAsignacion estadoAsignacion={this.state.detalleRecaudaciones.estado} recibo={this.state.objRecaudaciones} alumno={this.state.objAlumnos} codAlumno={this.state.objAlumnos.codAlum} asignado={this.state.ObjAsignación} />
                                             </td>
                                             <td className="td1">
                                                 <form>
                                                     <div className="SplitPane row">
                                                         <div className="col-xs-10">
-                                                            <Select value={this.state.alumno} onChange={this.handleChangeAlumno} options={this.state.opcAlumno}/>
+                                                            <Select value={this.state.alumno} onChange={this.handleChangeAlumno} options={this.state.opcAlumno} />
                                                         </div>
                                                         <div className="col-xs-1">
                                                             <button className="waves-effect waves-light btn-small" onClick={this.onClickBuscar}>
@@ -450,7 +624,7 @@ class BuscarNuevo extends React.Component {
                                             </button>
                                         </div>
                                         <div className="col col-lg-4">
-                                            <button className="waves-effect btn-warning btn-large center" type="submit" onClick={this.onSubmitReasignar}>
+                                            <button className="waves-effect btn-warning btn-large center" type="submit" onClick={this.onSubmitReasignar} hidden>
                                                 Reasignar <i className="large material-icons left">replay</i>
                                             </button>
                                         </div>
@@ -460,18 +634,129 @@ class BuscarNuevo extends React.Component {
                                             </button>
                                         </div>
                                     </div>
+                                    {this.state.mostrarResultadoAlumnos ? (
+                                        <div className="col col-lg-12">
+                                            <AR_ReciboResultadoAlumnos listAlumnos={this.state.objAlumnos} />
+                                        </div>
+                                    ) : (null)}
                                 </div>
                             </div>
-                        ): (null)}
+                        ) : (null)}
                     </div>
-                ): (null)}
-                {this.state.posgradoB?(
+                ) : (null)}
+                {this.state.recB ? (
                     <div>
-                        <AR_PendienteAsignacion listPendienteAsignacion={this.state.objPendienteAsignacion}/>
+                        <form>
+                            <div className="SplitPane row">
+                                <div className="col-xs-3 margen2">
+                                    <input ref={(input) => this.recibo = input} type="text" maxLength="100" placeholder="Número de recibo" />
+                                </div>
+                                <div className="col-xs-2 margen2">
+                                    <button className="waves-effect waves-light btn-large center" type="submit" onClick={this.onSubmitRecibo}>
+                                        Buscar
+                                        <i className="large material-icons left">search</i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        {this.state.buscarRec ? (
+                            <div className="row justify-content-md-center">
+                                <table className="table">
+                                    <AR_tableHeaderRecibo />
+                                    <tbody>
+                                        <tr>
+                                            <td className="td1">{1}</td>
+                                            <td className="td1">{this.state.detalleRecaudaciones.apeNom}</td>
+                                            <td className="td1">{this.state.detalleRecaudaciones.concepto}</td>
+                                            <td className="td1">{this.state.detalleRecaudaciones.recibo}</td>
+                                            <td className="td1">{this.state.detalleRecaudaciones.moneda}</td>
+                                            <td className="td1">{this.state.detalleRecaudaciones.importe}</td>
+                                            <td className="td1">{this.state.detalleRecaudaciones.fecha}</td>
+
+                                            <td className="td1">
+                                                <AR_CodigoAsignacion codAlum={this.state.detalleRecaudaciones.codAlumno} />
+                                            </td>
+
+                                            <td className="td1">
+                                                <AR_ProgramaAsignacion siglaPrograma={this.state.detalleRecaudaciones.siglaPrograma} />
+                                            </td>
+
+                                            <td className="td1">
+                                                <AR_EstadoAsignacion estadoAsignacion={this.state.detalleRecaudaciones.estado} recibo={this.state.objRecaudaciones} alumno={this.state.objAlumnos} codAlumno={this.state.objAlumnos.codAlum} asignado={this.state.ObjAsignación} />
+                                            </td>
+                                            <td className="td1">
+                                                <form>
+                                                    <div className="SplitPane row">
+                                                        <div className="col-xs-10">
+                                                            <Select value={this.state.alumno} onChange={this.handleChangeAlumno} options={this.state.opcAlumno} />
+                                                        </div>
+                                                        <div className="col-xs-1">
+                                                            <button className="waves-effect waves-light btn-small" onClick={this.onClickBuscar}>
+                                                                <i className="large material-icons left">search</i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div className="center datos">
+                                    <div>
+                                        <div className="col col-lg-4">
+                                            <button className="waves-effect btn-success btn-large center" type="submit" onClick={this.onSubmitGuardar}>
+                                                Asignar <i className="large material-icons left">save</i>
+                                            </button>
+                                        </div>
+                                        <div className="col col-lg-4">
+                                            <button className="waves-effect btn-warning btn-large center" type="submit" onClick={this.onSubmitReasignar} hidden>
+                                                Reasignar <i className="large material-icons left">replay</i>
+                                            </button>
+                                        </div>
+                                        <div className="col col-lg-4">
+                                            <button className="waves-effect btn-danger btn-large center" type="submit" onClick={this.onSubmitEliminar}>
+                                                Desasignar <i className="large material-icons left">delete</i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    {this.state.mostrarResultadoAlumnos ? (
+                                        <div className="col col-lg-12">
+                                            <AR_ReciboResultadoAlumnos listAlumnos={this.state.objAlumnos} />
+                                        </div>
+                                    ) : (null)}
+                                </div>
+                            </div>
+                        ) : (null)}
                     </div>
-                ): (null)}
-                <hr/>
-                {this.state.asignarRec?(
+                ) : (null)}
+                {this.state.posgradoB ? (
+                    <div>
+                        <form>
+                            <div className="SplitPane row">
+                                <div className="col-xs-3 margen2">
+                                    <input ref={(input) => this.fechaInicio = input} type="date" maxLength="100" placeholder="Fecha de Inicio" />
+                                </div>
+                                <div className="col-xs-3 margen2">
+                                    <input ref={(input) => this.fechaFin = input} type="date" maxLength="100" placeholder="Fecha de Fin" />
+                                </div>
+                                <div className="col-xs-2 margen2">
+                                    <button className="waves-effect waves-light btn-large center" type="submit" onClick={this.onSubmitRecaudaciones}>
+                                        Buscar
+                                        <i className="large material-icons left">search</i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        {this.state.buscarPendiente ? (
+                            <div>
+                                <AR_PendienteAsignacion listPendienteAsignacion={this.state.objPendienteAsignacion} />
+                            </div>
+                        ) : (null)}
+                    </div>
+                ) : (null)}
+                <hr />
+                {this.state.asignarRec ? (
                     <div>
                         <div className="row justify-content-md-center">
                             <div className="col col-lg-2">
@@ -492,7 +777,7 @@ class BuscarNuevo extends React.Component {
                                 <input className="autocomplete" value={this.state.nombre} onChange={this.onChangeNombre} placeholder="Nombres"></input>
                             </div>
                         </div>
-                        <br/>
+                        <br />
                         <div className="row justify-content-md-center">
                             <div className="col col-lg-2">
                                 <button className="waves-effect waves-light btn-large center" type="submit" onClick={this.onSubmitAsignar}>
@@ -501,20 +786,23 @@ class BuscarNuevo extends React.Component {
                             </div>
                         </div>
                     </div>
-                ): (null)}
+                ) : (null)}
             </div>
         )
     }
 
     onSubmitAsignar = (e) => {
-        if(this.Validar(this.state.dni, this.state.codigo, this.state.apePat, this.state.apeMat, this.state.nombre)){
-            if(this.state.dni != '' && this.state.codigo == '' && this.state.apePat == '' && this.state.apeMat == '' && this.state.nombre == ''){
+        if (this.Validar(this.state.dni, this.state.codigo, this.state.apePat, this.state.apeMat, this.state.nombre)) {
+            if (this.state.dni != '' && this.state.codigo == '' && this.state.apePat == '' && this.state.apeMat == '' && this.state.nombre == '') {
                 this.buscarDni(this.state.dni, e);
-            } else if(this.state.dni == '' && this.state.codigo != '' && this.state.apePat == '' && this.state.apeMat == '' && this.state.nombre == ''){
-            this.buscarCodigo(this.state.codigo, e);
-            } else if(this.state.dni == '' && this.state.codigo == '' && this.state.apePat != '' || this.state.apeMat != '' || this.state.nombre != ''){
+
+            } else if (this.state.dni == '' && this.state.codigo != '' && this.state.apePat == '' && this.state.apeMat == '' && this.state.nombre == '') {
+                this.buscarCodigo(this.state.codigo, e);
+
+            } else if (this.state.dni == '' && this.state.codigo == '' && this.state.apePat != '' || this.state.apeMat != '' || this.state.nombre != '') {
                 this.buscarApellidoNombre(this.state.apePat, this.state.apeMat, this.state.nombre, e);
-            } else{
+
+            } else {
                 swal("Lo sentimos, sólo puede llenar un campo para la búsqueda", "", "info");
             }
         }
@@ -524,80 +812,217 @@ class BuscarNuevo extends React.Component {
     onSubmitGuardar = (e) => {
         console.log("---ACTUALIZA CODIGO Y PROGRAMA EN RECAUDACIONES ---");
         console.log(this.state.objRecaudaciones[0].idRec);
-		console.log(this.state.alumno);		
-		console.log(this.state.alumno.codAlumno);		
-		console.log(this.state.alumno.idPrograma);		
-        if(this.state.alumno != null){            
-            fetch(CONFIG1 + 'recaudaciones/actualizar/' + this.state.objRecaudaciones[0].idRec + '/'+ this.state.alumno.codAlumno + '/'+ this.state.alumno.idPrograma, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    method: "POST",
-                    body: JSON.stringify ({
-                        'idRec': this.state.objRecaudaciones[0].idRec,
-                        'codAlumno': this.state.alumno.codAlumno,
-                        'idPrograma': this.state.alumno.idPrograma
-                    })
+
+        console.log("---ALUMNO DEPUES DEL CLICK GUARDAR ---"); //VERIFICAR CON LA CONSOLA
+        console.log(this.state.alumno);
+        //ANTHONY	
+        //alert(this.state.alumno.codAlumno);		
+        //alert(this.state.alumno.nom_programa);
+
+        let state_apeNom = this.state.objRecaudaciones[0].apeNom;
+        let state_concepto = this.state.objRecaudaciones[0].concepto;
+        let state_recibo = this.state.objRecaudaciones[0].numero;
+        let state_importe = this.state.objRecaudaciones[0].importe;
+        let state_fecha = this.state.objRecaudaciones[0].fecha;
+        let state_moneda = this.state.objRecaudaciones[0].moneda;
+
+
+
+        let id_alum = this.state.objRecaudaciones[0].codAlum;
+        let id_prog = this.state.objRecaudaciones[0].idProg;
+        let siglaPrograma = '-'; //m-----IMPORTAAAA
+        try {
+            id_alum = this.state.alumno.codAlumno;
+            id_prog = this.state.alumno.idPrograma;
+            siglaPrograma = this.state.alumno.siglaProg; //AHORA CAMBIAR LA REST
+        } catch (error) {
+            console.log(error);
+        }
+
+        let objRecibo_estado = "true";
+
+
+        if (state_moneda == '108') {
+
+            this.setState({
+                detalleRecaudaciones: {
+                    apeNom: state_apeNom,
+                    concepto: state_concepto,
+                    recibo: state_recibo,
+                    moneda: 'SOL',
+                    importe: 'S/ ' + state_importe,
+                    fecha: state_fecha,
+                    estado: objRecibo_estado,
+                    codAlumno: id_alum,//m
+                    programa: id_prog,//m
+                    siglaPrograma: siglaPrograma,
+                }
+            });
+        } else if (state_moneda == '113') {
+            this.setState({
+                detalleRecaudaciones: {
+                    apeNom: state_apeNom,
+                    concepto: state_concepto,
+                    recibo: state_recibo,
+                    moneda: 'DOL',
+                    importe: '$ ' + state_importe,
+                    fecha: state_fecha,
+                    estado: objRecibo_estado,
+                    codAlumno: id_alum,//m
+                    programa: id_prog,//m
+                    siglaPrograma: siglaPrograma,
+                }
+            });
+        } else {
+            this.setState({
+                detalleRecaudaciones: {
+                    apeNom: state_apeNom,
+                    concepto: state_concepto,
+                    recibo: state_recibo,
+                    moneda: ' ',
+                    importe: state_importe,
+                    fecha: state_fecha,
+                    estado: objRecibo_estado,
+                    codAlumno: id_alum,//m
+                    programa: id_prog,
+                    siglaPrograma: siglaPrograma,
+                }
+            });
+        }
+
+
+        if (this.state.alumno != null) {
+            fetch(CONFIG + 'recaudaciones/actualizar/' + this.state.objRecaudaciones[0].idRec + '/' + this.state.alumno.codAlumno + '/' + this.state.alumno.idPrograma, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                method: "POST",
+                body: JSON.stringify({
+                    'idRec': this.state.objRecaudaciones[0].idRec,
+                    'codAlumno': this.state.alumno.codAlumno,
+                    'idPrograma': this.state.alumno.idPrograma
                 })
+            })
                 .then((response) => {
                     console.log(response);
-                    if(response){
-                        swal("guardado exitosamente!", "","success");
+                    if (response) {
+                        swal("guardado exitosamente!", "", "success");
                         this.setState({
                             estado: true,
                         });
-                    }else{
-                        swal("Oops, Algo salió mal!!", "","error");
+                    } else {
+                        swal("Oops, Algo salió mal!!", "", "error");
                     }
                 })
                 .catch((error) => {
-                    swal("Oops, Algo salió mal!!", "","error");
+                    swal("Oops, Algo salió mal!!", "", "error");
                     console.log(error);
                 })
-        }else{
+        } else {
             swal("Seleccione una opción", " ", "info");
         }
-    } 
+    }
 
-    onSubmitReasignar = (e) =>{
-        if(this.state.alumno != null){
-            fetch(CONFIG1 + 'alumnoalumnoprograma/actualizar/' + this.state.objRecaudaciones[0].idAlum + '/' + this.state.alumno.codAlumno + '/' + this.state.alumno.idPrograma)
+    onSubmitReasignar = (e) => {
+        if (this.state.alumno != null) {
+            fetch(CONFIG + 'alumnoalumnoprograma/actualizar/' + this.state.objRecaudaciones[0].idAlum + '/' + this.state.alumno.codAlumno + '/' + this.state.alumno.idPrograma)
                 .then((response) => {
-                    if(response){
+                    if (response) {
                         console.log(response);
                         swal("Reasignado exitosamente", "", "success");
-                    } else{
-                        swal("Oops, algo salió mal", "","error");
+                    } else {
+                        swal("Oops, algo salió mal", "", "error");
                     }
-                }) 
-                .catch((error) => {
-                    swal("Oops, algo salió mal", "","error");
                 })
-        }else{
+                .catch((error) => {
+                    swal("Oops, algo salió mal", "", "error");
+                })
+        } else {
             swal("Seleccione una opción", " ", "info");
         }
         e.preventDefault();
     }
 
     onSubmitEliminar = (e) => {
+        let state_apeNom = this.state.objRecaudaciones[0].apeNom;
+        let state_concepto = this.state.objRecaudaciones[0].concepto;
+        let state_recibo = this.state.objRecaudaciones[0].numero;
+        let state_importe = this.state.objRecaudaciones[0].importe;
+        let state_fecha = this.state.objRecaudaciones[0].fecha;
+        let state_moneda = this.state.objRecaudaciones[0].moneda;
+
         let id_alum = this.state.objRecaudaciones[0].idAlum;
-        if(this.state.estado){
-            fetch(CONFIG1 + 'alumnoalumnoprograma/eliminar/' + id_alum)
+        let id_prog = this.state.objRecaudaciones[0].idProg;//m
+        let id_Rec = this.state.objRecaudaciones[0].idRec;
+
+        let objRecibo_estado = "false";
+
+        if (state_moneda == '108') {
+
+            this.setState({
+                detalleRecaudaciones: {
+                    apeNom: state_apeNom,
+                    concepto: state_concepto,
+                    recibo: state_recibo,
+                    moneda: 'SOL',
+                    importe: 'S/ ' + state_importe,
+                    fecha: state_fecha,
+                    estado: objRecibo_estado,
+                    codAlumno: '',//m
+                    programa: '',//m
+                    siglaProg: '',//m
+                }
+            });
+        } else if (state_moneda == '113') {
+            this.setState({
+                detalleRecaudaciones: {
+                    apeNom: state_apeNom,
+                    concepto: state_concepto,
+                    recibo: state_recibo,
+                    moneda: 'DOL',
+                    importe: '$ ' + state_importe,
+                    fecha: state_fecha,
+                    estado: objRecibo_estado,
+                    codAlumno: '',//m
+                    programa: '',//m
+                    siglaProg: '',//m
+                }
+            });
+        } else {
+            this.setState({
+                detalleRecaudaciones: {
+                    apeNom: state_apeNom,
+                    concepto: state_concepto,
+                    recibo: state_recibo,
+                    moneda: ' ',
+                    importe: state_importe,
+                    fecha: state_fecha,
+                    estado: objRecibo_estado,
+                    codAlumno: '',//m
+                    programa: '',//m
+                    siglaProg: '',//m
+                }
+            });
+        }
+
+        if (this.state.estado || this.state.detalleRecaudaciones.estado == "true") {//m Y ANTHONY
+            fetch(CONFIG + '/recaudaciones/desasignar/' + id_Rec)//m------DESASIGNAR
                 .then((response) => {
-                    if(response){
+                    if (response) {
                         console.log(response);
                         swal("Eliminado exitosamente", "", "success");
                         this.setState({
                             estado: false,
+
                         });
-                    } else{
-                        swal("Oops, algo salió mal", "","error");
+                    } else {
+                        swal("Oops, algo salió mal", "", "error");
                     }
                 })
                 .catch((error) => {
-                    swal("Oops, algo salió mal", "","error");
+                    swal("Oops, algo salió mal", "", "error");
                 })
-        }else{
+        } else {
             swal("Registro no asignado, no se puede eliminar", " ", "info");
         }
     }
@@ -612,7 +1037,7 @@ class BuscarNuevo extends React.Component {
     onChangeCodigo = (e) => {
         e.preventDefault();
         this.setState({
-            codigo: e.target.value			
+            codigo: e.target.value
         });
     }
 
@@ -638,7 +1063,7 @@ class BuscarNuevo extends React.Component {
     }
 
     buscarDni = (dni) => {
-        fetch(CONFIG1 + 'alumnoprograma/buscard/' + dni)
+        fetch(CONFIG + 'alumnoprograma/buscard/' + dni)
             .then((response) => {
                 return response.json();
             })
@@ -646,18 +1071,23 @@ class BuscarNuevo extends React.Component {
                 console.log("---Alumnos---");
                 console.log(alumnos);
                 var Array = [];
-                if(alumnos.length > 0){
-                    for(var i = 0; i < alumnos.length; i++){
+                if (alumnos.length > 0) {
+                    for (var i = 0; i < alumnos.length; i++) {
                         var e = {
                             codAlumno: alumnos[i].codAlumno,
-                            idPrograma: alumnos[i].idPrograma, 
+                            idPrograma: alumnos[i].idPrograma,
+                            siglaProg: alumnos[i].siglaProg,/*-ACTUALIZA SIGLAPROG-*/
                             value: alumnos[i].codAlumno + " / " + alumnos[i].apePaterno + " " + alumnos[i].apeMaterno + " " + alumnos[i].nomAlumno + " / " + alumnos[i].nom_programa,
                             label: alumnos[i].codAlumno + " / " + alumnos[i].apePaterno + " " + alumnos[i].apeMaterno + " " + alumnos[i].nomAlumno + " / " + alumnos[i].nom_programa
                         }
                         Array.push(e);
                     }
+
+                    this.setState({
+                        mostrarResultadoAlumnos: true,
+                    });
                     swal("Consulta realizada exitosamente!", "", "success");
-                }else{
+                } else {
                     swal("No hay registro de ese alumno", " ", "info");
                 }
                 this.setState({
@@ -674,7 +1104,7 @@ class BuscarNuevo extends React.Component {
 
     buscarCodigo = (codigo) => {
         console.log(codigo, "Codigo");
-        fetch(CONFIG1 + 'alumnoprograma/buscarc/' + codigo)
+        fetch(CONFIG + 'alumnoprograma/buscarc/' + codigo)
             .then((response) => {
                 return response.json();
             })
@@ -682,18 +1112,23 @@ class BuscarNuevo extends React.Component {
                 console.log("---Alumnos---");
                 console.log(alumnos);
                 var Array = [];
-                if(alumnos.length > 0){
-                    for(var i = 0; i < alumnos.length; i++){
+                if (alumnos.length > 0) {
+                    for (var i = 0; i < alumnos.length; i++) {
                         var e = {
                             codAlumno: alumnos[i].codAlumno,
-                            idPrograma: alumnos[i].idPrograma, 
+                            idPrograma: alumnos[i].idPrograma,
+                            siglaProg: alumnos[i].siglaProg,/*-ACTUALIZA SIGLAPROG-*/
                             value: alumnos[i].codAlumno + " / " + alumnos[i].apePaterno + " " + alumnos[i].apeMaterno + " " + alumnos[i].nomAlumno + " / " + alumnos[i].nom_programa,
                             label: alumnos[i].codAlumno + " / " + alumnos[i].apePaterno + " " + alumnos[i].apeMaterno + " " + alumnos[i].nomAlumno + " / " + alumnos[i].nom_programa
                         }
                         Array.push(e);
                     }
+
+                    this.setState({
+                        mostrarResultadoAlumnos: true,
+                    });
                     swal("Consulta realizada exitosamente!", "", "success");
-                }else{
+                } else {
                     swal("No hay registro de ese alumno", " ", "info");
                 }
                 this.setState({
@@ -717,14 +1152,16 @@ class BuscarNuevo extends React.Component {
         var arregloCadenas = nombre.split(separador);
         var arreglo = [];
 
-        for(let i = 0; i < arregloCadenas.length; i++){
-            if(arregloCadenas[i] != ''){
+        for (let i = 0; i < arregloCadenas.length; i++) {
+            if (arregloCadenas[i] != '') {
                 arreglo.push(arregloCadenas[i]);
             }
         }
         var nuevoNombre = arreglo.join('&');
 
-        fetch(CONFIG1 + 'alumnoprograma/leer/' + nuevoNombre)
+        var mostrar = false;
+
+        fetch(CONFIG + 'alumnoprograma/leer/' + nuevoNombre)
             .then((response) => {
                 return response.json();
             })
@@ -732,49 +1169,53 @@ class BuscarNuevo extends React.Component {
                 console.log("---Alumnos---");
                 console.log(alumnos);
                 var Array = [];
-                if(alumnos.length > 0){
-                    for(var i = 0; i < alumnos.length; i++){
+                if (alumnos.length > 0) {
+                    for (var i = 0; i < alumnos.length; i++) {
                         var e = {
                             codAlumno: alumnos[i].codAlumno,
-                            idPrograma: alumnos[i].idPrograma, 
+                            idPrograma: alumnos[i].idPrograma,
+                            siglaProg: alumnos[i].siglaProg,/*-ACTUALIZA SIGLAPROG-*/
                             value: alumnos[i].codAlumno + " / " + alumnos[i].apePaterno + " " + alumnos[i].apeMaterno + " " + alumnos[i].nomAlumno + " / " + alumnos[i].nom_programa,
                             label: alumnos[i].codAlumno + " / " + alumnos[i].apePaterno + " " + alumnos[i].apeMaterno + " " + alumnos[i].nomAlumno + " / " + alumnos[i].nom_programa
                         }
                         Array.push(e);
                     }
+                    mostrar = true;
                     swal("Consulta realizada exitosamente!", "", "success");
-                }else{
+                } else {
                     swal("No hay registro de ese alumno", " ", "info");
                 }
                 this.setState({
                     opcAlumno: Array,
                     objAlumnos: alumnos,
                     asignarRec: false,
+                    mostrarResultadoAlumnos: mostrar,
                 });
             })
             .catch((error) => {
                 swal("Algo salío mal", "", "error");
                 console.log(error);
             });
-            e.preventDefault();
+        e.preventDefault();
     }
 
     buscarCodigoAlumnoPrograma = (codAlum, idProg, e) => {
-        console.log(codAlum + ' ' + idProg, "AlumnoPrograma:codAlum,idProg");        
+        console.log(codAlum + ' ' + idProg, "AlumnoPrograma:codAlum,idProg");
 
-        fetch(CONFIG1 + 'alumnoprograma/leer/' + codAlum + '/'+ idProg)
+        fetch(CONFIG + 'alumnoprograma/leer/' + codAlum + '/' + idProg)
             .then((response) => {
                 return response.json();
             })
             .then((alumnos) => {
-                console.log("---Alumnos---");
+                console.log("---Alumnos22---");
                 console.log(alumnos);
                 var Array = [];
-                if(alumnos.length > 0){
-                    for(var i = 0; i < alumnos.length; i++){
+                if (alumnos.length > 0) {
+                    for (var i = 0; i < alumnos.length; i++) {
                         var e = {
                             codAlumno: alumnos[i].codAlumno,
-                            idPrograma: alumnos[i].idPrograma, 
+                            idPrograma: alumnos[i].idPrograma,
+                            siglaProg: alumnos[i].siglaProg,/*-ACTUALIZA SIGLAPROG-*/
                             value: alumnos[i].codAlumno + " / " + alumnos[i].apePaterno + " " + alumnos[i].apeMaterno + " " + alumnos[i].nomAlumno + " / " + alumnos[i].nom_programa,
                             label: alumnos[i].codAlumno + " / " + alumnos[i].apePaterno + " " + alumnos[i].apeMaterno + " " + alumnos[i].nomAlumno + " / " + alumnos[i].nom_programa
                         }
@@ -782,38 +1223,37 @@ class BuscarNuevo extends React.Component {
                     }
                     swal("Consulta realizada exitosamente!", "", "success");
                     this.setState({
-                    opcAlumno: Array,
-                    objAlumnos: alumnos,
-                    asignarRec: true,
+                        opcAlumno: Array,
+                        objAlumnos: alumnos,
                     });
 
 
-                }else{
+                } else {
                     swal("No hay registro de ese alumno", " ", "info");
                     this.setState({
-                    opcAlumno: Array,
-                    objAlumnos: alumnos,
-                    asignarRec: false,
-                });
+                        opcAlumno: Array,
+                        objAlumnos: alumnos,
+                        asignarRec: false,
+                        mostrarResultadoAlumnos: false,
+                    });
 
                 }
-                
             })
             .catch((error) => {
-                swal("Algo salío mal", "", "error");
+                swal("Algo salío mal", "", "error");//MIGUEL CORREGIR
                 console.log(error);
             });
-            e.preventDefault();
+        e.preventDefault();
     }
 
-    Validar(dni, codigo, paterno, materno, nombre){
-        if(dni == '' && codigo == '' && paterno == '' && materno =='' && nombre == ''){
+    Validar(dni, codigo, paterno, materno, nombre) {
+        if (dni == '' && codigo == '' && paterno == '' && materno == '' && nombre == '') {
             swal("Llene uno de los campos para realizar la búsqueda", "", "info");
             return false;
-        } else{
+        } else {
             return true;
         }
-    } 
+    }
 
 }
 export default BuscarNuevo

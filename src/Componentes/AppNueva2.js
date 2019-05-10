@@ -4,7 +4,7 @@ import '../App2.css';
 import BuscarNuevo from './BuscarNuevo';
 import {browserHistory} from 'react-router-3';
 import swal from 'sweetalert'
-import CONFIG1 from '../Configuracion/Config1'
+import CONFIG from '../Configuracion/Config'
 
 
 class AppNueva extends React.Component {
@@ -235,7 +235,7 @@ BuscarNombre(busqueda) {
     //ANTERIOR LINK
     //https://modulo-alumno-zuul.herokuapp.com/modulo-alumno-jdbc-client/alumno/leer/restringido/
 
-    fetch(CONFIG1 + 'recaudaciones/alumno/concepto/buscar/' + nombrenuevo)
+    fetch(CONFIG + 'recaudaciones/alumno/concepto/buscar/' + nombrenuevo)
       .then((response) => {
         return response.json()
       })
@@ -327,7 +327,7 @@ BuscarNombre(busqueda) {
            //ANTERIOR LINK
             //1//https://modulo-alumno-zuul.herokuapp.com/modulo-alumno-jdbc-client/alumno/alumnoprograma/programa/listar/restringido/
             //2//https://modulo-alumno-jdbc.herokuapp.com/alumno/alumnoprograma/programa/listar/restringido/
-           fetch(CONFIG1+'alumno/alumnoprograma/programa/listar/restringido/'+nombrenuevo2)
+           fetch(CONFIG+'alumno/alumnoprograma/programa/listar/restringido/'+nombrenuevo2)
           .then((response) => {
           return response.json()
           })

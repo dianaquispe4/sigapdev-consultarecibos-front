@@ -2,7 +2,7 @@ import React from 'react'
 import CONFIG from '../Configuracion/Config'
 import {Button, Modal, ModalHeader, ModalBody, ModalFooter, Table} from 'reactstrap'
 
-class AR_EstadoAsignacion extends React.Component {
+class AR_CodigoAsignacion extends React.Component {
 
     constructor(props) {
         super(props);
@@ -67,43 +67,16 @@ class AR_EstadoAsignacion extends React.Component {
     }
 
     render(){
-        if(this.props.estadoAsignacion == 'true' ){// ANTHONY || this.props.codAlumno != ""
+        if(this.props.codAlum != ""){// ANTHONY
             return(
                 <div>
-                    <Button color="success" onClick={this.toggle}>
-                        Asignado
-                        <i className="large material-icons left">visibility</i>
-                    </Button>
-                    <Modal isOpen={this.state.modal} toggle={this.toggle}>
-                        <ModalHeader toggle={this.toggle}>Detalles del Recibo Asignado</ModalHeader>
-                        <ModalBody>
-                            <Table responsive>
-                                <thead>
-                                    <tr>
-                                        <th className="th">Código</th>
-                                        <th className="th">Apellidos y Nombres</th>
-                                        <th className="th">Programa</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td className="td">{this.state.detalle.codigo}</td>
-                                        <td className="td">{this.state.detalle.nombre}</td>
-                                        <td className="td">{this.state.detalle.programa}</td>
-                                    </tr>
-                                </tbody>
-                            </Table>
-                        </ModalBody>
-                        <ModalFooter>
-                            <Button color="primary" onClick={this.toggle}>Aceptar</Button>
-                        </ModalFooter>
-                    </Modal>
+                    {this.props.codAlum} 
                 </div>
             )
         } else{
             return(
                 <div>
-                    No Asignado
+                    
                 </div>
             )
         }
@@ -111,4 +84,4 @@ class AR_EstadoAsignacion extends React.Component {
 
 }
 
-export default AR_EstadoAsignacion
+export default AR_CodigoAsignacion

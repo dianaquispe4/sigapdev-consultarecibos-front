@@ -12,6 +12,7 @@ class VistaSeguimientoEgresado extends React.Component {
             form2: false,
             form3: false,
             form4: false,
+            codigo: this.props.params.name,
         }
         
         this.Regresar=this.Regresar.bind(this);
@@ -56,10 +57,10 @@ class VistaSeguimientoEgresado extends React.Component {
     }
 
     Regresar=(e)=>{
-        browserHistory.push('/');
+        browserHistory.push('/'+this.state.codigo);
         e.preventDefault();
     }
-    
+
     render() {
         return (
             <div className="">

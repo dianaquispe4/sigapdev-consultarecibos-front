@@ -807,7 +807,7 @@ seleccionar(){
 }
 seguimientoEgresados=(e)=>{
   
-  browserHistory.push('/vista/egresado');
+  browserHistory.push(this.state.name+'/vista/egresado');
   e.preventDefault();
 
 }

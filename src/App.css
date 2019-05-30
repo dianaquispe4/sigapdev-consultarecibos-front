@@ -448,3 +448,17 @@ button.delete:hover{
  
    margin-bottom: 0px;
 }
+.align-vertical-center{
+  display: block;
+  margin-top: 2%;
+  margin-left: 20px;
+}
+.collection-left {
+  width: 250px;
+  margin-top: 2px;
+  box-shadow: -6px 0px 0px 0px rgba(0,0,0,0.75);
+}
+.content-menu{
+  display: flex;
+  
+}

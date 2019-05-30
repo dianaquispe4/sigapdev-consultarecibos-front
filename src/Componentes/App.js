@@ -439,6 +439,7 @@ componentDidUpdate(){
         <div>
           <h3>Estado de pagos por alumno
           <ul id="nav-mobile" className=" row right  hide-on-med-and-down">
+              <li ><a className="seleccionar col" onClick={this.seguimientoEgresados} >Seguimiento de Egresados<i className="material-icons right">edit</i></a></li>
               <li ><a className="seleccionar col" onClick={this.enviarFormulario} >Revisar Beneficio<i className="material-icons right">edit</i></a></li>
               <li ><a className="seleccionar col" onClick={this.Regresar} >Regresar<i className="material-icons right">reply</i></a></li>
 
@@ -804,7 +805,12 @@ seleccionar(){
           })
         }
 }
+seguimientoEgresados=(e)=>{
+  
+  browserHistory.push('/vista/egresado');
+  e.preventDefault();
 
+}
 
 enviarFormulario=(e)=>{
   if(this.state.aparecer){

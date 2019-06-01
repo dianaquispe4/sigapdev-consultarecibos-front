@@ -426,7 +426,12 @@ componentDidUpdate(){
 
 
   Regresar=(e)=>{
-    this.closeNav();
+    try{
+      this.closeNav();
+    }
+    catch(error){
+      //Nothing happens
+    }
     browserHistory.push('/');
     e.preventDefault();
 
@@ -860,7 +865,12 @@ seguimientoEgresados=(e)=>{
 }
 
 enviarFormulario=(e)=>{
-  this.closeNav();
+  try{
+    this.closeNav();
+  }
+  catch(error){
+    //Nothing happens
+  }
   if(this.state.aparecer){
     this.setState({
       aparecer:false,

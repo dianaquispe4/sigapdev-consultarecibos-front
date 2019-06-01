@@ -497,3 +497,7 @@ button.delete:hover{
   font-size: 36px;
   margin-left: 50px;
 }
+
+#main {
+  transition: margin-right .5s;
+}

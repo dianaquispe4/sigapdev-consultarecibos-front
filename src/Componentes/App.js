@@ -436,7 +436,7 @@ componentDidUpdate(){
     if (this.state.pagos.length > 0) {
       return (
 
-        <div className="">
+        <div id="main" className="">
         {this.state.aparecer?(
         <div>
           <h3>Estado de pagos por alumno

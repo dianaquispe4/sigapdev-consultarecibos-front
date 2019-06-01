@@ -426,7 +426,7 @@ componentDidUpdate(){
 
 
   Regresar=(e)=>{
-
+    this.closeNav();
     browserHistory.push('/');
     e.preventDefault();
 
@@ -860,6 +860,7 @@ seguimientoEgresados=(e)=>{
 }
 
 enviarFormulario=(e)=>{
+  this.closeNav();
   if(this.state.aparecer){
     this.setState({
       aparecer:false,

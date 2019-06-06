@@ -16,8 +16,12 @@ class PagoRow extends React.Component {
     this.state = {
       desabilitar: true,
       desabilitar2: true,
+      desabilitar3: true,
+      desabilitar4: true,
       selectedOption: null,
       selectedOption2: null,
+      selectedOption3: null,
+      selectedOption4: null,
       idconcepto: '',
       idmoneda: '',
       array: this.props.datos,
@@ -35,13 +39,14 @@ class PagoRow extends React.Component {
 
     // }
 
-
     this.setState({
       selectedOption: { value: this.props.pago.concepto, label: this.props.pago.concepto },
       idconcepto: this.idconcepto(this.props.pago.concepto),
       selectedOption2: { value: this.props.pago.moneda2, label: this.props.pago.moneda2 },
+      selectedOption3: { value: this.props.pago.descripcion_ubi, label: this.props.pago.descripcion_ubi },
+      selectedOption4: { value: this.props.pago.descripcion_tipo, label: this.props.pago.descripcion_tipo },
       idmoneda: this.idmoneda(this.props.pago.moneda2),
-      estado: this.setEstado(this.props.pago.estado)
+      estado: this.setEstado(this.props.pago.estado),
     });
 
     if (this.props.pago.moneda2 == 'DOL') {
@@ -149,6 +154,30 @@ class PagoRow extends React.Component {
     }
   }
 
+  handleChange3 = (selectedOption) => {
+    if (selectedOption != null) {
+      this.setState({
+        selectedOption3: selectedOption,
+      });
+      // console.log(`Option selected:`, selectedOption);
+      // console.log("idconcepto : "+this.idmoneda(selectedOption.value));
+    } else {
+      swal("Seleccione una opcion", "", "info");
+    }
+  }
+
+  handleChange4 = (selectedOption) => {
+    if (selectedOption != null) {
+      this.setState({
+        selectedOption4: selectedOption,
+      });
+      // console.log(`Option selected:`, selectedOption);
+      // console.log("idconcepto : "+this.idmoneda(selectedOption.value));
+    } else {
+      swal("Seleccione una opcion", "", "info");
+    }
+  }
+
 
   colocar = () => {
     var hola = document.getElementById(this.props.pago.idRec);
@@ -224,7 +253,7 @@ class PagoRow extends React.Component {
       document.getElementById(editImporte).style.background = '#F2F2F2';
       document.getElementById(editImporte).focus();
 
-      var editCuentaBanco;
+      /*var editCuentaBanco;
       var num = 250296;
       editCuentaBanco = this.props.pago.idRec.toString() + num.toString() + "ctabanco";
       var __cuentabanco__ = this.props.pago.descripcion_tipo;
@@ -232,17 +261,24 @@ class PagoRow extends React.Component {
       document.getElementById(editCuentaBanco).value = __cuentabanco__;
       document.getElementById(editCuentaBanco).disabled = false;
       document.getElementById(editCuentaBanco).style.background = '#F2F2F2';
-      document.getElementById(editCuentaBanco).focus();
+      document.getElementById(editCuentaBanco).focus();*/
 
-      var editUbicacion;
+      this.setState({
+        desabilitar3: false
+      })
+
+      this.setState({
+        desabilitar4: false
+      })
+      /*var editUbicacion;
       var num = 250296;
       editUbicacion = this.props.pago.idRec.toString() + num.toString() + "ubicacion";
       var __ubicacion__ = this.props.pago.descripcion_ubi;
 
-      document.getElementById(editUbicacion).value = _importe_;
+      document.getElementById(editUbicacion).value = __ubicacion__;
       document.getElementById(editUbicacion).disabled = false;
       document.getElementById(editUbicacion).style.background = '#F2F2F2';
-      document.getElementById(editUbicacion).focus();
+      document.getElementById(editUbicacion).focus();*/
 
       var numRecibo;
       numRecibo = this.props.pago.idRec.toString() + this.props.pago.numero;
@@ -772,7 +808,14 @@ class PagoRow extends React.Component {
         </td>
 
         <td className="td"/*UBICACION*/ id={"ubicacion" + (this.props.numero + 1)} style={{display: 'none'}}>
-        <form action="#">
+          <Select
+            id = {this.props.pago.idRec.toString() + "250296" + "ubicacion"}
+            value={this.state.selectedOption3}
+            onChange={this.handleChange3}
+            options= {this.props.ubicaciones}
+            disabled={this.state.desabilitar3}
+          />
+        {/*<form action="#">
             <label className="center-xs color_white">
               <input
                 id={this.props.pago.idRec.toString() + "250296" + "ubicacion"}
@@ -781,11 +824,18 @@ class PagoRow extends React.Component {
                 type="text" />
               <span></span>
             </label>
-          </form>
+      </form>*/}
         </td>
 
         <td className="td"/*CTA BANCO*/ id={"banco" + (this.props.numero + 1)} style={{display: 'none'}}>
-          <form action="#">
+        <Select
+            id = {this.props.pago.idRec.toString() + "250296" + "ctabanco"}
+            value={this.state.selectedOption4}
+            onChange={this.handleChange4}
+            options= {this.props.cuentas}
+            disabled={this.state.desabilitar4}
+          />
+          {/*<form action="#">
             <label className="center-xs color_white">
               <input
                 id={this.props.pago.idRec.toString() + "250296" + "ctabanco"}
@@ -794,7 +844,7 @@ class PagoRow extends React.Component {
                 type="text" />
               <span></span>
             </label>
-          </form>
+    </form>*/}
         </td>
 
         <td className="td" id={"search" + (this.props.numero + 1)}>

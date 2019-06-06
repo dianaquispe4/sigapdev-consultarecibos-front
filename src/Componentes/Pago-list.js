@@ -24,7 +24,8 @@ class PagoList extends React.Component {
             this.props.listado.map((pago,key) => {
               return <PagoRow Funciones={this.props.funcion} key={pago.idRec} numero={key}
                                   pago={pago} conceptos={this.props.conceptos} datos={this.props.datos}
-                                  datosmonedas={this.props.datosMonedas} monedas={this.props.monedas}/>
+                                  datosmonedas={this.props.datosMonedas} monedas={this.props.monedas}
+                                  ubicaciones={this.props.ubicaciones} cuentas={this.props.cuentas}/>
             })
           }
         </tbody>

@@ -55,12 +55,17 @@ class App extends React.Component {
       concepto:[],
       datos:[],
       monedas:[],
-      monedasvl:[]
+      monedasvl:[],
+      ubicaciones:[],
+      ubicacionesv1:[],
+      tipos:[],
+      tiposv1:[]
     }
     this.clase='';
     this.alumno = '';
     this.importe = 0;
     this.FiltrarFecha = this.FiltrarFecha.bind(this);
+    this.showboolean = true;
 
     this.FiltrarNumeros = this.FiltrarNumeros.bind(this);
     this.filtrarConcepto = this.filtrarConcepto.bind(this);
@@ -209,6 +214,69 @@ componentDidUpdate(){
 
 //aqui terminan las moneditas
 
+//aqui van las ubicaciones
+var array3=[];
+fetch(CONFIG+'/concepto/ubicaciones')
+.then((response)=>{
+    return response.json()
+}).then((listas)=>{
+    console.log("ubicaciones---------")
+    console.log(listas)
+
+    this.setState({
+      ubicaciones: listas
+    })
+    listas.forEach(function(element) {
+      var e={value:element.descripcion,label:element.descripcion};
+      array3.push(e);
+    });
+
+
+})
+.catch(error=>{
+    console.error(error)
+});
+
+console.log("valores de las weas de monedas");
+console.log(array3)
+
+this.setState({
+  ubicacionesv1:array3
+})
+
+//------
+
+//aqui van los tipos
+var array4=[];
+fetch(CONFIG+'/concepto/cuentas')
+.then((response)=>{
+    return response.json()
+}).then((listas)=>{
+    console.log("cuentas---------")
+    console.log(listas)
+
+    this.setState({
+      cuentas: listas
+    })
+    listas.forEach(function(element) {
+      var e={value:element.descripcion,label:element.descripcion};
+      array4.push(e);
+    });
+
+
+})
+.catch(error=>{
+    console.error(error)
+});
+
+console.log("valores de las weas de monedas");
+console.log(array4)
+
+this.setState({
+  cuentasv1:array4
+})
+
+//------
 
 
 
@@ -460,6 +528,9 @@ componentDidUpdate(){
                 <this.clase alumno={this.state.alumno} />
                 <h6 align="center" className="Alumno"><b>Nombres:</b></h6>
                 <h6 align="center" className="negro">{this.state.pagos[0].apeNom}</h6>
+
+                <h6 align="center" className="Alumno"><b>Programa:</b></h6>
+                <h6 align="center" className="negro">{this.state.pagos[0].sigla_programa}</h6>
               </div>
               <div className=" col-xs-9">
               {/* <div className="center-xs-12 margen_top">
@@ -527,7 +598,7 @@ componentDidUpdate(){
               {/*Fin*/}
               <table className="table-small">
                 <TableHeader   />
-                <PagoList funcion={this.Funcion} listado={this.state.pageOfItems}  conceptos={this.state.concepto} datos={this.state.datos} datosMonedas={this.state.monedas}  monedas={this.state.monedasvl}/>
+                <PagoList funcion={this.Funcion} listado={this.state.pageOfItems}  conceptos={this.state.concepto} datos={this.state.datos} datosMonedas={this.state.monedas}  monedas={this.state.monedasvl} ubicaciones={this.state.ubicacionesv1} cuentas={this.state.cuentasv1}/>
               </table>
               <div className="margen_top"> <Paginacion items={this.state.pagocero} onChangePage={this.onChangePage}/></div>
               <div className="row">

@@ -808,13 +808,15 @@ class PagoRow extends React.Component {
         </td>
 
         <td className="td"/*UBICACION*/ id={"ubicacion" + (this.props.numero + 1)} style={{display: 'none'}}>
+          <h6 align="left">
           <Select
             id = {this.props.pago.idRec.toString() + "250296" + "ubicacion"}
             value={this.state.selectedOption3}
             onChange={this.handleChange3}
             options= {this.props.ubicaciones}
-            disabled={this.state.desabilitar3}
+            disabled={this.state.desabilitar3} style ={{width: '145px'}}
           />
+          </h6>
         {/*<form action="#">
             <label className="center-xs color_white">
               <input
@@ -828,13 +830,15 @@ class PagoRow extends React.Component {
         </td>
 
         <td className="td"/*CTA BANCO*/ id={"banco" + (this.props.numero + 1)} style={{display: 'none'}}>
+        <h6 align="left">
         <Select
             id = {this.props.pago.idRec.toString() + "250296" + "ctabanco"}
             value={this.state.selectedOption4}
             onChange={this.handleChange4}
             options= {this.props.cuentas}
-            disabled={this.state.desabilitar4}
+            disabled={this.state.desabilitar4} style ={{width: '180px'}}
           />
+          </h6>
           {/*<form action="#">
             <label className="center-xs color_white">
               <input

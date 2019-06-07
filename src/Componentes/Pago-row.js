@@ -432,6 +432,44 @@ class PagoRow extends React.Component {
 
   }
 
+  SeleccionUbicacion = () => {
+
+    var num = 250296;
+    var stringss;
+    var ubicacion;
+    stringss = this.props.pago.idRec.toString() + num.toString() + "ubicacion";
+    ubicacion = document.getElementById(stringss).value;
+
+    if (ubicacion == "") {
+      ubicacion = 0;
+    } else {
+
+      return ubicacion;
+    }
+
+    return ubicacion;
+
+  }
+
+  SeleccionCtaBanco = () => {
+
+    var num = 250296;
+    var stringss;
+    var ctabanco;
+    stringss = this.props.pago.idRec.toString() + num.toString() + "ctabanco";
+    ctabanco = document.getElementById(stringss).value;
+
+    if (ctabanco == "") {
+      ctabanco = 0;
+    } else {
+
+      return ctabanco;
+    }
+
+    return ctabanco;
+
+  }
+
 
   editarObservacion = () => {
 
@@ -561,6 +599,12 @@ class PagoRow extends React.Component {
       var importe = "";
       importe = this.SeleccionImporte();
 
+      var ubicacion = "";
+      ubicacion = this.SeleccionUbicacion();
+
+      var ctabanco = "";
+      ctabanco = this.SeleccionCtaBanco();
+
       fetch(CONFIG + "recaudaciones/alumno/concepto/actualizar",
         {
           headers: {
@@ -576,7 +620,9 @@ class PagoRow extends React.Component {
               "fecha": fechaG,
               "id_concepto": this.state.idconcepto,
               "id_moneda": this.state.idmoneda,
-              "importe": importe
+              "importe": importe,
+              "ubicacion": ubicacion,
+              "ctabanco": ctabanco
             }
 
           )

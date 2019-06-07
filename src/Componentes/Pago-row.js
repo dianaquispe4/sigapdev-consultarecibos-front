@@ -159,7 +159,7 @@ class PagoRow extends React.Component {
       this.setState({
         selectedOption3: selectedOption,
       });
-      // console.log(`Option selected:`, selectedOption);
+       console.log(`Option selected:`, this.state.selectedOption3.value);
       // console.log("idconcepto : "+this.idmoneda(selectedOption.value));
     } else {
       swal("Seleccione una opcion", "", "info");
@@ -436,12 +436,19 @@ class PagoRow extends React.Component {
 
     var num = 250296;
     var stringss;
-    var ubicacion;
+    var ubicacion = this.state.selectedOption3.value;
     //stringss = this.props.pago.idRec.toString() + num.toString() + "ubicacion";
-    var id = this.props.numero + 1;
-    stringss = 'react-select-' + (4*id) + '--value-item'; 
+    /*var id = this.props.numero + 1;
 
-    var ubicacion = document.getElementById(stringss).innerHTML;
+    try{
+      stringss = 'react-select-' + (4*id) + '--value-item'; 
+      var ubicacion = document.getElementById(stringss).innerHTML;
+    }
+    catch(error){
+      stringss = 'react-select-' + (4*(id+10)) + '--value-item'; 
+      var ubicacion = document.getElementById(stringss).innerHTML;
+    }
+
 
     if (ubicacion == "") {
       ubicacion = 0;
@@ -449,7 +456,7 @@ class PagoRow extends React.Component {
 
       return ubicacion;
     }
-
+    */
     return ubicacion;
 
   }
@@ -458,17 +465,24 @@ class PagoRow extends React.Component {
 
     var num = 250296;
     var stringss;
-    var ctabanco;
-    var id = this.props.numero + 1;
-    stringss = 'react-select-' + (4*id+1) + '--value-item';
-    var ctabanco = document.getElementById(stringss).innerHTML;
+    var ctabanco = this.state.selectedOption4.value;;
+    /*var id = this.props.numero + 1;
+    try{
+      stringss = 'react-select-' + (4*id+1) + '--value-item';
+      var ctabanco = document.getElementById(stringss).innerHTML;
+    }
+    catch(error){
+      stringss = 'react-select-' + (4*(id+10)+1) + '--value-item';
+      var ctabanco = document.getElementById(stringss).innerHTML;
+    }
+
 
     if (ctabanco == "") {
       ctabanco = 0;
     } else {
 
       return ctabanco;
-    }
+    }*/
 
     return ctabanco;
 

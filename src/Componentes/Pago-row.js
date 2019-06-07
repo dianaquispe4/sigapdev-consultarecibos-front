@@ -437,8 +437,11 @@ class PagoRow extends React.Component {
     var num = 250296;
     var stringss;
     var ubicacion;
-    stringss = this.props.pago.idRec.toString() + num.toString() + "ubicacion";
-    ubicacion = document.getElementById(stringss).value;
+    //stringss = this.props.pago.idRec.toString() + num.toString() + "ubicacion";
+    var id = this.props.numero + 1;
+    stringss = 'react-select-' + (4*id) + '--value-item'; 
+
+    var ubicacion = document.getElementById(stringss).innerHTML;
 
     if (ubicacion == "") {
       ubicacion = 0;
@@ -456,8 +459,9 @@ class PagoRow extends React.Component {
     var num = 250296;
     var stringss;
     var ctabanco;
-    stringss = this.props.pago.idRec.toString() + num.toString() + "ctabanco";
-    ctabanco = document.getElementById(stringss).value;
+    var id = this.props.numero + 1;
+    stringss = 'react-select-' + (4*id+1) + '--value-item';
+    var ctabanco = document.getElementById(stringss).innerHTML;
 
     if (ctabanco == "") {
       ctabanco = 0;
@@ -678,6 +682,12 @@ class PagoRow extends React.Component {
       var importe = "";
       importe = this.SeleccionImporte();
 
+      var ubicacion = "";
+      ubicacion = this.SeleccionUbicacion();
+
+      var ctabanco = "";
+      ctabanco = this.SeleccionCtaBanco();
+
       fetch(CONFIG + "recaudaciones/alumno/concepto/actualizar",
         {
           headers: {
@@ -693,7 +703,9 @@ class PagoRow extends React.Component {
               "fecha": fechaG,
               "id_concepto": this.state.idconcepto,
               "id_moneda": this.state.idmoneda,
-              "importe": importe
+              "importe": importe,
+              "ubicacion": ubicacion,
+              "ctabanco": ctabanco
             }
 
           )
@@ -856,7 +868,7 @@ class PagoRow extends React.Component {
         <td className="td"/*UBICACION*/ id={"ubicacion" + (this.props.numero + 1)} style={{display: 'none'}}>
           <h6 align="left">
           <Select
-            id = {this.props.pago.idRec.toString() + "250296" + "ubicacion"}
+            inputId = {this.props.pago.idRec.toString() + "250296" + "ubicacion"}
             value={this.state.selectedOption3}
             onChange={this.handleChange3}
             options= {this.props.ubicaciones}
@@ -878,7 +890,7 @@ class PagoRow extends React.Component {
         <td className="td"/*CTA BANCO*/ id={"banco" + (this.props.numero + 1)} style={{display: 'none'}}>
         <h6 align="left">
         <Select
-            id = {this.props.pago.idRec.toString() + "250296" + "ctabanco"}
+            inputId = {this.props.pago.idRec.toString() + "250296" + "ctabanco"}
             value={this.state.selectedOption4}
             onChange={this.handleChange4}
             options= {this.props.cuentas}

@@ -69,8 +69,7 @@ render() {
       </div>
         <footer>
           <div className="row center-xs centrar color">
-          <img src="https://png.icons8.com/ios/1600/hachiko.png" height="25"/>
-            UPG-FISI © 2018 
+          Proyecto SIGAP © 2019 v.1.3
           </div>
           </footer>
 

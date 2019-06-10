@@ -525,12 +525,12 @@ this.setState({
 
             <div className="SplitPane row">
               <div className=" col-xs-3">
-                <this.clase alumno={this.state.alumno} />
+                <this.clase alumno={this.state.alumno} sigla={this.state.pagos[0].sigla_programa}/>
                 <h6 align="center" className="Alumno"><b>Nombres:</b></h6>
                 <h6 align="center" className="negro">{this.state.pagos[0].apeNom}</h6>
 
-                <h6 align="center" className="Alumno"><b>Programa:</b></h6>
-                <h6 align="center" className="negro">{this.state.pagos[0].sigla_programa}</h6>
+                {/*<h6 align="center" className="Alumno"><b>Programa:</b></h6>
+                <h6 align="center" className="negro">{this.state.pagos[0].sigla_programa}</h6>*/}
               </div>
               <div className=" col-xs-9">
               {/* <div className="center-xs-12 margen_top">
@@ -680,7 +680,7 @@ this.setState({
                     </h3>
                 </div>
 
-              <FormularioIntermio codigo={this.state.name} idprograma={this.state.pagos[0].idPrograma} />
+              <FormularioIntermio codigo={this.state.name} idprograma={this.state.pagos[0].idPrograma}/>
             </div>
 
 
@@ -709,7 +709,7 @@ this.setState({
 
            <footer>
             <div className="row center-xs centrar color">
-            Proyecto SIGAP © 2019
+            Proyecto SIGAP © 2019 v.1.3
             </div>
             </footer>
 
@@ -772,48 +772,48 @@ Filtrar=(e)=>{
     "conceptos": concep,
     "recibos":this.state.filtroNumeros
   }
-  console.log("json enviado")
+  console.log("json enviado");
   console.log(json);
   fetch(CONFIG+'recaudaciones/alumno/concepto/listar/filtrar', //CONFIG+'recaudaciones/alumno/concepto/listar/filtrar'
   {
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  method: "POST",
-  body: JSON.stringify(
-    {
-      "nom_ape": nombrenuevoFiltro,
-      "fechaInicial": filtrodel,
-      "fechaFinal": filtroal,
-      "conceptos": concep,
-      "recibos":this.state.filtroNumeros
-    }
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    method: "POST",
+    body: JSON.stringify(
+      {
+        "nom_ape": nombrenuevoFiltro,
+        "fechaInicial": filtrodel,
+        "fechaFinal": filtroal,
+        "conceptos": concep,
+        "recibos":this.state.filtroNumeros
+      }
 
-  )
-}
-).then((response) => {
-return response.json()
-})
-.then((pagos) => {
-if(pagos.length > 0){
-
-this.setState({
-  pagocero: pagos
-});
-swal("Filtro realizado exitosamente!","","success");
-}else{
-  console.log(pagos);
-  swal("No se encontraron registros","","info");
-}
-/*
-console.log("Pagos filtrados que recibo")
-console.log(pagos);*/
-})
-.catch(error => {
-// si hay algún error lo mostramos en consola
-swal("Oops, Algo salió mal!!", "","error")
-console.error(error)
-});
+    )
+  }
+  ).then((response) => {
+  return response.json()
+  })
+  .then((pagos) => {
+  if(pagos.length > 0){
+  this.setState({
+    pagocero: pagos
+  });
+  console.log("json recibido");
+  swal("Filtro realizado exitosamente!","","success");
+  }else{
+    console.log(pagos);
+    swal("No se encontraron registros","","info");
+  }
+  /*
+  console.log("Pagos filtrados que recibo")
+  console.log(pagos);*/
+  })
+  .catch(error => {
+  // si hay algún error lo mostramos en consola
+  swal("Oops, Algo salió mal!!", "","error")
+  console.error(error)
+  });
 
 
 
@@ -851,7 +851,7 @@ console.error(error)
       }
     }
 
-   // console.log(checkbox_seleccionados);
+    //console.log("Seleccion conceptos: " + checkbox_seleccionados);
 
     return checkbox_seleccionados;
 

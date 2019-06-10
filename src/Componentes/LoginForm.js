@@ -124,7 +124,7 @@ class LoginForm extends React.Component {
       <ul id="nav-mobile" className="right hide-on-med-and-down">
        {/*  <li><a onClick={this.VistaNueva} >VistaNueva</a></li> */}
         <li><a onClick={this.VistaNueva2} >  <i className="small material-icons right">check_box</i>Asignar Programa</a></li>
-        <li><a onClick={this.VistaTablaCreada} ><i className="small material-icons right">pageview</i>Ver tabla</a></li>
+        {/*<li><a onClick={this.VistaTablaCreada} ><i className="small material-icons right">pageview</i>Ver tabla</a></li>*/}
       </ul>
     </div>
   </nav>
@@ -156,8 +156,7 @@ class LoginForm extends React.Component {
       </div>
       <footer>
             <div className="row center-xs centrar color">
-            <img src="https://png.icons8.com/ios/1600/hachiko.png" height="25"/>
-            UPG-FISI © 2018 
+            Proyecto SIGAP © 2019 v.1.3
             </div>
             </footer>
       </div>

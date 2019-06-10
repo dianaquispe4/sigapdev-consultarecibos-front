@@ -301,6 +301,26 @@ class PagoRow extends React.Component {
       document.getElementById(editCiclo).style.background = '#F2F2F2';
       document.getElementById(editCiclo).focus();
 
+      var editFecha;
+      var fechaEdit = this.props.pago.fecha;
+      var anioFecha = fechaEdit.substring(0, 4);
+      console.log("AÑO");
+      console.log(anioFecha);
+
+      var mesFecha = fechaEdit.substring(5, 7);
+      console.log("MES");
+      console.log(mesFecha);
+      var diaFecha = fechaEdit.substring(8, 10);
+      console.log("DIA");
+      console.log(diaFecha);
+
+      var fechaVolteada = diaFecha + "-" + mesFecha + "-" + anioFecha;
+
+      editFecha = this.props.pago.idRec.toString() + this.props.pago.idAlum.toString();
+      document.getElementById(editFecha).value = fechaVolteada;
+      document.getElementById(editFecha).disabled = false;
+      document.getElementById(editFecha).style.background = '#F2F2F2';
+
       /*var editImporte;
       var num = 250296;
       editImporte = this.props.pago.idRec.toString() + num.toString() + "importe";
@@ -780,13 +800,14 @@ class PagoRow extends React.Component {
         </td>
 
         <td className="td">
-          <form action="#">
+          <form action="#" >
             <label className="center-xs color_white">
               <input
                 id={this.props.pago.idRec.toString() + "250296"}
                 placeholder={this.props.pago.ciclo}
                 disabled="true"
-                type="text" />
+                type="text" 
+                style ={{width: '15px'}}/>
               <span> </span>
             </label>
           </form>
@@ -921,6 +942,19 @@ class PagoRow extends React.Component {
               <span></span>
             </label>
     </form>*/}
+        </td>
+
+        <td className="td">
+          <form action="#">
+            <label className="row center-xs color_white">
+              <input
+                onClick={this.colocar}
+                className="checkbox1"
+                id={this.props.pago.idRec + "validar"}
+                type="checkbox" />
+              <span> </span>
+            </label>
+          </form>
         </td>
 
         <td className="td" id={"search" + (this.props.numero + 1)}>

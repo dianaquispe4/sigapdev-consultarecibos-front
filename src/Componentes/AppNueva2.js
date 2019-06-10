@@ -96,7 +96,7 @@ PagoAsignar(opcion) {
           ):(null)}
           <footer>
             <div className="row center-xs centrar color">
-              UPG-FISI © 2018
+              Proyecto SIGAP © 2019 v.1.3
             </div>
           </footer>
         </div>

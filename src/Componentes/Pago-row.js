@@ -26,7 +26,8 @@ class PagoRow extends React.Component {
       idmoneda: '',
       array: this.props.datos,
       moneda: '',
-      estado: ''
+      estado: '',
+      isChecked: false
     }
   }
 
@@ -47,6 +48,7 @@ class PagoRow extends React.Component {
       selectedOption4: { value: this.props.pago.descripcion_tipo, label: this.props.pago.descripcion_tipo },
       idmoneda: this.idmoneda(this.props.pago.moneda2),
       estado: this.setEstado(this.props.pago.estado),
+      isChecked: this.props.pago.validado,
     });
 
     if (this.props.pago.moneda2 == 'DOL') {
@@ -180,10 +182,16 @@ class PagoRow extends React.Component {
 
 
   colocar = () => {
-    var hola = document.getElementById(this.props.pago.idRec);
-    console.log(hola.id);
-    var holas = hola.id;
-    this.props.Funciones(holas);
+    var checkbox = document.getElementById(this.props.pago.idRec);
+    console.log(checkbox.id);
+    var checkboxID = checkbox.id;
+    this.props.Funciones(checkboxID);
+  }
+
+  toggleChange = () => {
+    this.setState({
+      isChecked: !this.state.isChecked,
+    });
   }
 
   editarFila = () => {
@@ -944,12 +952,14 @@ class PagoRow extends React.Component {
     </form>*/}
         </td>
 
+  {/*Validado*/}
         <td className="td">
           <form action="#">
             <label className="row center-xs color_white">
               <input
-                onClick={this.colocar}
+                onClick={this.toggleChange}
                 className="checkbox1"
+                checked = {this.state.isChecked}
                 id={this.props.pago.idRec + "validar"}
                 type="checkbox" />
               <span> </span>

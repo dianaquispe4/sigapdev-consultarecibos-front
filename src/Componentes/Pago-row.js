@@ -651,6 +651,9 @@ class PagoRow extends React.Component {
       var ctabanco = "";
       ctabanco = this.SeleccionCtaBanco();
 
+      var validado = null;
+      validado = this.state.isChecked;
+
       fetch(CONFIG + "recaudaciones/alumno/concepto/actualizar",
         {
           headers: {
@@ -668,7 +671,8 @@ class PagoRow extends React.Component {
               "id_moneda": this.state.idmoneda,
               "importe": importe,
               "ubicacion": ubicacion,
-              "ctabanco": ctabanco
+              "ctabanco": ctabanco,
+              "validad": validado
             }
 
           )
@@ -730,6 +734,9 @@ class PagoRow extends React.Component {
       var ctabanco = "";
       ctabanco = this.SeleccionCtaBanco();
 
+      var validado = null;
+      validado = this.state.isChecked;
+
       fetch(CONFIG + "recaudaciones/alumno/concepto/actualizar",
         {
           headers: {
@@ -747,7 +754,8 @@ class PagoRow extends React.Component {
               "id_moneda": this.state.idmoneda,
               "importe": importe,
               "ubicacion": ubicacion,
-              "ctabanco": ctabanco
+              "ctabanco": ctabanco,
+              "validado": validado
             }
 
           )

@@ -652,7 +652,8 @@ class PagoRow extends React.Component {
       ctabanco = this.SeleccionCtaBanco();
 
       var validado = null;
-      validado = this.state.isChecked;
+      console.log("Validado: " + String(this.state.isChecked));
+      validado = String(this.state.isChecked);
 
       fetch(CONFIG + "recaudaciones/alumno/concepto/actualizar",
         {
@@ -672,7 +673,7 @@ class PagoRow extends React.Component {
               "importe": importe,
               "ubicacion": ubicacion,
               "ctabanco": ctabanco,
-              "validad": validado
+              "validado": validado
             }
 
           )
@@ -735,7 +736,8 @@ class PagoRow extends React.Component {
       ctabanco = this.SeleccionCtaBanco();
 
       var validado = null;
-      validado = this.state.isChecked;
+      console.log("Validado: " + String(this.state.isChecked));
+      validado = String(this.state.isChecked);
 
       fetch(CONFIG + "recaudaciones/alumno/concepto/actualizar",
         {

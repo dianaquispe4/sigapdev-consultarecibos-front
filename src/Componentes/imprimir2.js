@@ -192,12 +192,23 @@ class Imprimir2 extends React.Component {
     });
 
     if(checkbox_selec.length!=0){
-
-      for(let j=0;j<listadopagos.length;j++){
+      console.log("Validado")
+      console.log(this.props.validado);
+      if(this.props.validado){
+        for(let j=0;j<listadopagos.length;j++){
+          if(listadopagos[j].check==true && listadopagos[j].validado==true){
+              total.push(listadopagos[j]); // ya no hay esas weas de chck box
+          }
+        }
+      }
+      else{
+        for(let j=0;j<listadopagos.length;j++){
           if(listadopagos[j].check==true){
               total.push(listadopagos[j]); // ya no hay esas weas de chck box
           }
         }
+      }
+      
 
       console.log("wea")
       console.log(total);
@@ -508,7 +519,7 @@ console.log(listadoFinalBeneficio);
         doc.text(75,585,nombres);
         doc.text(125,585,"-");
         doc.text(135,585,listafinal[0][0].apeNom);
-        doc.text(700,585,"SIGAP v.1.0");
+        doc.text(700,585,"SIGAP v.1.3");
         doc.text(800,585, doc.internal.getCurrentPageInfo().pageNumber + "/" + pageCount);
 
         doc.setDrawColor(0, 0, 0);

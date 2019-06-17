@@ -36,12 +36,14 @@ class App extends React.Component {
     super(props)
     this.state = {
       seleccionado:false,
+      validado:false,
       datosformulario:[],
       aparecer:true,
       todos:false,
       checkbox_:[],
       filtros: [],
       pagocero: [],
+      pagocerovalidado: [],
       pagos: [],
       name: this.props.params.name,
       pageOfItems: [],
@@ -114,7 +116,6 @@ componentDidUpdate(){
  }
 
   colocar=()=>{
-
     var check=document.getElementById("observacion").checked;
     //console.log(check);
     if(check){
@@ -129,9 +130,23 @@ componentDidUpdate(){
         seleccionado:false
       })
     }
-
-
   }
+
+  validado=()=>{
+    var check=document.getElementById("validar").checked;
+    //console.log(check);
+    if(check){
+      this.setState({
+        validado:true
+      })
+    }
+    if(!check){
+      this.setState({
+        validado:false
+      })
+    }
+  }
+
 
   componentWillMount() {
     this.pageOfItems = this.pagocero;
@@ -646,13 +661,24 @@ this.setState({
                         type="checkbox" />
                         <span className="tfuente">observacion </span>
                         </label>
+                  </form>
 
+                  <form action="#">
+                    <label className="row tfuente ">
+
+                      <input
+                        onClick={this.validado}
+                        id="validar"
+                        className="val"
+                        type="checkbox" />
+                        <span className="tfuente">validado </span>
+                        </label>
                   </form>
 
                 </div>
                 <div className="col-md-3">
 
-                  <Imprimir2 onClick={this.enviar}  seleccionado={this.state.seleccionado} listado={this.state.pagocero} conceptos={this.state.conceptos} alumno={this.state.alumno} costos={this.state.costosP} datos={this.state.datosformulario}/>
+                  <Imprimir2 onClick={this.enviar}  validado = {this.state.validado} seleccionado={this.state.seleccionado} listado={this.state.pagocero} conceptos={this.state.conceptos} alumno={this.state.alumno} costos={this.state.costosP} datos={this.state.datosformulario}/>
                 </div>
 
 
@@ -1314,3 +1340,4 @@ Paginacion.propTypes = propTypes;
 Paginacion.defaultProps = defaultProps;
 
 export default App;
+

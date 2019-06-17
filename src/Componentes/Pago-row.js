@@ -18,6 +18,7 @@ class PagoRow extends React.Component {
       desabilitar2: true,
       desabilitar3: true,
       desabilitar4: true,
+      desabilitar5: true,
       selectedOption: null,
       selectedOption2: null,
       selectedOption3: null,
@@ -278,6 +279,10 @@ class PagoRow extends React.Component {
       this.setState({
         desabilitar4: false
       })
+
+      this.setState({
+        desabilitar5: false
+      })
       /*var editUbicacion;
       var num = 250296;
       editUbicacion = this.props.pago.idRec.toString() + num.toString() + "ubicacion";
@@ -341,6 +346,10 @@ class PagoRow extends React.Component {
 
 
       //document.getElementById(conceptos)
+
+      this.setState({
+        desabilitar5: false
+      })
 
     }
 
@@ -918,28 +927,6 @@ class PagoRow extends React.Component {
           </table>
         </td>
 
-        <td className="td"/*UBICACION*/ id={"ubicacion" + (this.props.numero + 1)} style={{display: 'none'}}>
-          <h6 align="left">
-          <Select
-            inputId = {this.props.pago.idRec.toString() + "250296" + "ubicacion"}
-            value={this.state.selectedOption3}
-            onChange={this.handleChange3}
-            options= {this.props.ubicaciones}
-            disabled={this.state.desabilitar3} style ={{width: '145px'}}
-          />
-          </h6>
-        {/*<form action="#">
-            <label className="center-xs color_white">
-              <input
-                id={this.props.pago.idRec.toString() + "250296" + "ubicacion"}
-                placeholder={this.props.pago.descripcion_ubi}
-                disabled="true"
-                type="text" />
-              <span></span>
-            </label>
-      </form>*/}
-        </td>
-
         <td className="td"/*CTA BANCO*/ id={"banco" + (this.props.numero + 1)} style={{display: 'none'}}>
         <h6 align="left">
         <Select
@@ -950,16 +937,18 @@ class PagoRow extends React.Component {
             disabled={this.state.desabilitar4} style ={{width: '180px'}}
           />
           </h6>
-          {/*<form action="#">
-            <label className="center-xs color_white">
-              <input
-                id={this.props.pago.idRec.toString() + "250296" + "ctabanco"}
-                placeholder={this.props.pago.descripcion_tipo}
-                disabled="true"
-                type="text" />
-              <span></span>
-            </label>
-    </form>*/}
+        </td>
+
+        <td className="td"/*UBICACION*/ id={"ubicacion" + (this.props.numero + 1)} style={{display: 'none'}}>
+          <h6 align="left">
+          <Select
+            inputId = {this.props.pago.idRec.toString() + "250296" + "ubicacion"}
+            value={this.state.selectedOption3}
+            onChange={this.handleChange3}
+            options= {this.props.ubicaciones}
+            disabled={this.state.desabilitar3} style ={{width: '145px'}}
+          />
+          </h6>
         </td>
 
   {/*Validado*/}
@@ -971,7 +960,8 @@ class PagoRow extends React.Component {
                 className="checkbox1"
                 checked = {this.state.isChecked}
                 id={this.props.pago.idRec + "validar"}
-                type="checkbox" />
+                type="checkbox"
+                disabled={this.state.desabilitar5} />
               <span> </span>
             </label>
           </form>

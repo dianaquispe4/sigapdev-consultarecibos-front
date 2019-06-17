@@ -14,8 +14,8 @@ class TableHeader extends React.Component {
         <th className="th">FECHA</th>
         <th className="th ancho">MONEDA</th>
         <th className="th">IMPORTE</th>
-        <th className="th ancho" id = "ubicacion_header" style={{display: 'none'}}>UBICACION</th>
         <th className="th" id = "banco_header" style={{display: 'none'}}>CTA BANCO</th>
+        <th className="th ancho" id = "ubicacion_header" style={{display: 'none'}}>UBICACION</th>
         <th className="th" id = "validar_header">VALIDAR</th>
         <th className="th" id = "search_header">OBSV</th>
         <th className="th" id = "edit_header">EDITAR</th>

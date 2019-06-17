@@ -643,14 +643,8 @@ this.setState({
                         onClick={this.colocar}
                         id="observacion"
                         className="obs"
-
                         type="checkbox" />
                         <span className="tfuente">observacion </span>
-
-
-
-
-
                         </label>
 
                   </form>

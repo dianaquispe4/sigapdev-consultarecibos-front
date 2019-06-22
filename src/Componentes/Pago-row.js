@@ -200,13 +200,23 @@ class PagoRow extends React.Component {
     var estadoAlumno;
     estadoAlumno = this.props.pago.estado;
 
-    this.setState({
-      desabilitar2: false
-    })
+    var digitado = "N";
+    var remitido = "N";
+
+    for(let x = 0; x<this.props.configuraciones.length;x++){
+      if(this.props.configuraciones[x].idConfiguracion == 5){
+        remitido = this.props.configuraciones[x].estado;
+      }
+      else if(this.props.configuraciones[x].idConfiguracion == 6){
+        digitado = this.props.configuraciones[x].estado;
+      }
+    }
+
+    console.log("Digitado:" + digitado)
+    console.log("Remitido:" + remitido)
 
 
-
-    if (estadoAlumno == "M") {
+    if (estadoAlumno == "M" && digitado == "S") {
       var editConcepto;
       editConcepto = this.props.pago.idRec.toString() + this.props.pago.concepto;
 
@@ -218,6 +228,10 @@ class PagoRow extends React.Component {
 
       this.setState({
         desabilitar: false
+      })
+
+      this.setState({
+        desabilitar2: false
       })
 
 
@@ -302,10 +316,10 @@ class PagoRow extends React.Component {
       document.getElementById(numRecibo).style.background = '#F2F2F2';
       console.log(estadoAlumno);
     }
-    else {
-      //console.log("No tiene permiso para editar");
-      //swal("No es posible realizar cambios", "", "info");
-
+    else{
+      //no haga ni pincho
+    }
+    if(estadoAlumno != "M" && remitido == "S"){
       var editCiclo;
       var num = 250296;
       editCiclo = this.props.pago.idRec.toString() + num.toString();
@@ -350,29 +364,15 @@ class PagoRow extends React.Component {
       this.setState({
         desabilitar5: false
       })
-
     }
+    else{
+      //no haga ni pincho
+    }
+    //console.log("No tiene permiso para editar");
+    //swal("No es posible realizar cambios", "", "info");
 
 
   }
-
-  editarThis = () => {
-
-    this.setState({
-      desabilitar2: false
-    })
-
-      var editCiclo;
-      var num = 250296;
-      editCiclo = this.props.pago.idRec.toString() + num.toString();
-
-      document.getElementById(editCiclo).disabled = false;
-      document.getElementById(editCiclo).style.background = '#F2F2F2';
-      document.getElementById(editCiclo).focus();
-
-
-  }
-
 
 
   SeleccionNumeroRecibo = () => {

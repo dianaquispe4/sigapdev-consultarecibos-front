@@ -53,6 +53,7 @@ class App extends React.Component {
       filtroNumeros: [],
       alumno: {},
       conceptos:[],
+      configuraciones:[],
       costosP: {},
       concepto:[],
       datos:[],
@@ -190,6 +191,24 @@ componentDidUpdate(){
      concepto:array
    })
 
+   console.log("link configuraciones")
+    console.log(CONFIG+'configuracion/listar/')
+
+    fetch(CONFIG+'configuracion/listar/')
+      .then((response) => {
+        return response.json()
+      })
+      .then((listas) => {
+        console.log("configuraciones")
+        console.log(listas);
+        this.setState({
+          configuraciones: listas
+        },
+        );
+      })
+      .catch(error => {
+        console.error(error)
+      });
 
 
 //aqui terminan los conceptos
@@ -490,18 +509,11 @@ this.setState({
         this.setState({
           conceptos: conceptos
         },
-
-
         );
-
       })
       .catch(error => {
-
         console.error(error)
       });
-
-
-
     }
 
 
@@ -613,7 +625,7 @@ this.setState({
               {/*Fin*/}
               <table className="table-small">
                 <TableHeader   />
-                <PagoList funcion={this.Funcion} listado={this.state.pageOfItems}  conceptos={this.state.concepto} datos={this.state.datos} datosMonedas={this.state.monedas}  monedas={this.state.monedasvl} ubicaciones={this.state.ubicacionesv1} cuentas={this.state.cuentasv1}/>
+                <PagoList funcion={this.Funcion} listado={this.state.pageOfItems}  conceptos={this.state.concepto} datos={this.state.datos} datosMonedas={this.state.monedas}  monedas={this.state.monedasvl} ubicaciones={this.state.ubicacionesv1} cuentas={this.state.cuentasv1} configuraciones={this.state.configuraciones}/>
               </table>
               <div className="margen_top"> <Paginacion items={this.state.pagocero} onChangePage={this.onChangePage}/></div>
               <div className="row">

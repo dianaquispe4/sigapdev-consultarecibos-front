@@ -25,7 +25,7 @@ class PagoList extends React.Component {
               return <PagoRow Funciones={this.props.funcion} key={pago.idRec} numero={key}
                                   pago={pago} conceptos={this.props.conceptos} datos={this.props.datos}
                                   datosmonedas={this.props.datosMonedas} monedas={this.props.monedas}
-                                  ubicaciones={this.props.ubicaciones} cuentas={this.props.cuentas}/>
+                                  ubicaciones={this.props.ubicaciones} cuentas={this.props.cuentas} configuraciones={this.props.configuraciones}/>
             })
           }
         </tbody>

@@ -6,6 +6,7 @@ import CONFIG from '../Configuracion/Config';
 
 
 
+
 class VistaIntermedia extends React.Component{
     constructor(props){
         super(props)

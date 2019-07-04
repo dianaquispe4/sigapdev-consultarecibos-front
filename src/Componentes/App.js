@@ -17,6 +17,11 @@ import FormularioIntermio from './formulario-intermedio';
 import ComponenteEditable from './ComponenteEditable'
 import ImporteDolar from './ImporteDolar';
 
+import Select from 'react-select';
+import {
+  ModalFooter, ModalBody, ModalHeader, Modal, Button
+} from 'reactstrap';
+
 
 //ESTA ES LA VISTA PRINCIPAL POR NOMBRES Y APELLIDOS
 
@@ -62,7 +67,20 @@ class App extends React.Component {
       ubicaciones:[],
       ubicacionesv1:[],
       tipos:[],
-      tiposv1:[]
+      tiposv1:[],
+      defuncion: 1,
+      estadoAlumno:"",
+      valor: true,
+      estadoAlumnoInput:{value:"-1",label:"Escoga un nuevo estado"},
+      optionsEstadoAlumno:[{value:"casado",label:"Casado"},
+      {value:"soltero",label:"Soltero"},
+      {value:"divorciado",label:"Divorciado"},
+      {value:"viudo",label:"Viudo"},
+      {value:"separado",label:"Separado"},
+      {value:"conviviente",label:"Conviviente"},
+      {value:"fallecido",label:"Fallecido"}
+    ],
+      showModalConfiguracion:false,
     }
     this.clase='';
     this.alumno = '';
@@ -516,8 +534,18 @@ this.setState({
       });
     }
 
-
-  }
+        /**set array pagos */ 
+        fetch(CONFIG+'recaudaciones/alumno/concepto/listar_cod/' + nombrenuevo)
+        .then((response) => {
+        return response.json();
+        })
+        .then((pagos)  =>{
+          console.log("anyiiiiiiiiiiiiiiiiiiii"+this.state.pagos[0].estado_civil)
+          this.setState({
+          estadoAlumno:this.state.pagos[0].estado_civil,
+          })
+        });
+          }
 
 
   Regresar=(e)=>{
@@ -532,11 +560,161 @@ this.setState({
 
   }
 
+
+  editarEstado = (e) => {
+    e.preventDefault();
+    if (this.state.defuncion == 1) {
+      this.state.defuncion = 0;
+      this.state.estadoAlumno = "Alumno fallecido"
+      fetch(CONFIG+'recaudaciones/alumno/concepto/' + this.state.pagos[0].codAlumno  + '/estado_civil_alumno/' + this.state.alumno.estado_civil,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          method: "PATCH",
+        }
+      ).then((response) => {
+   
+        return response.json()
+
+      })
+        .then((defuncion) => {
+          if (this.state.defuncion == 0) {
+            //  swal("¿El alumno falleció?", "", "")
+          }
+
+
+        })
+        .catch(error => {
+          // si hay algún error lo mostramos en consola
+          swal("Oops, Algo salió mal!!", "", "error")
+          console.error(error)
+        });
+    } else {
+      this.state.defuncion = 1;
+
+      fetch(CONFIG+ 'recaudaciones/alumno/concepto/'+this.state.pagos[0].codAlumno + '/estado_civil_alumno/' + this.state.alumno.estado_civil,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          method: "PATCH",
+        }
+      ).then((response) => {
+        return response.json()
+
+      })
+        .then((defuncion) => {
+          if (this.state.defuncion == 1) {
+            console.log("ptm")
+            console.log(this.state.estadoAlumno)
+            this.state.estadoAlumno = "Alumno fallecido"
+            //  swal("¿Modificar el estado del alumno?", "", "")
+          }
+        })
+        .catch(error => {
+          // si hay algún error lo mostramos en consola
+          swal("Oops, Algo salió mal!!", "", "error")
+          console.error(error)
+        });
+    }
+    var uno = document.getElementById('FbotonStatus');
+    if (this.state.valor) {
+      uno.innerText = "";
+      this.state.estadoAlumno = uno;
+    } else {
+      uno.innerText = "";
+      this.state.estadoAlumno = uno;
+    }
+
+    this.state.valor = !this.state.valor
+
+  }
+  guardarCambios = () => {
+  
+    let self = this;
+    if(this.state.estadoAlumnoInput.value === null || this.state.estadoAlumnoInput.value === "-1"){
+
+      swal("Escoga una opción", "", "error")
+    }else{
+      fetch(CONFIG+'recaudaciones/alumno/concepto/'+this.state.pagos[0].codAlumno+'/estado_civil_alumno/'+this.state.estadoAlumnoInput.value,
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        method: "PATCH",
+      }
+    ).then((response) => {
+      return response.json()
+    })
+      .then((defuncion) => {
+        if(defuncion===1){
+          swal("Estado del alumno cambiado!", "", "success")
+          self.setState({
+            estadoAlumnoInput:{value:"0",label:"Seleccione un estado"}
+          })
+        }
+      })
+      .catch(error => {
+        // si hay algún error lo mostramos en consola
+        swal("Oops, Algo salió mal!!", "", "error")
+        console.error(error)
+      });
+    }
+  }
+
+  editarConfiguracion = () => {
+    this.setState({
+      showModalConfiguracion:true
+    });
+  }
+
+  closeModal = () => {
+    this.setState({
+      showModalConfiguracion:false
+    });
+  }
+
+
+  handleChangeSelectEstadoAlumno = (estado) => {
+ 
+    if(estado!== null){
+      this.setState({
+        estadoAlumnoInput:estado,
+        estadoAlumno:estado.label
+      });
+    }
+
+  }
+
   render() {
     if (this.state.pagos.length > 0) {
       return (
 
         <div id="main" className="">
+
+            <Modal isOpen={this.state.showModalConfiguracion} toggle={this.closeModal}  
+                  aria-labelledby="contained-modal-title-vcenter">
+                  <div>
+                  <ModalHeader toggle={this.closeModal}>Configuración de Estudiante</ModalHeader>
+                    <ModalBody>
+                      <h6 align="left" className="Alumno"><b>Estado de alumno:</b></h6>
+                      <h6  align="center"  className="negro">{this.state.estadoAlumno}</h6> 
+                      <Select
+                            name="estadoAlumnoInput"
+                            id="estadoAlumnoInput"
+                            placeholder="Seleccione un estado"
+                            value={this.state.estadoAlumnoInput}
+                            onChange={this.handleChangeSelectEstadoAlumno}
+                            options={this.state.optionsEstadoAlumno}
+                          />
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button color="green" onClick={this.guardarCambios}>Guardar</Button><p>         </p>
+                      <Button color="secondary" onClick={this.closeModal}>Salir</Button>
+                  </ModalFooter>
+                </div>      
+              </Modal>
         {this.state.aparecer?(
         <div>
           <h3>Estado de pagos por alumno
@@ -548,18 +726,33 @@ this.setState({
           </ul>
           </h3>
           <hr/>
-
-
             <div className="SplitPane row">
               <div className=" col-xs-3">
-                <this.clase alumno={this.state.alumno} sigla={this.state.pagos[0].sigla_programa}/>
-                <h6 align="center" className="Alumno"><b>Nombres:</b></h6>
-                <h6 align="center" className="negro">{this.state.pagos[0].apeNom}</h6>
-
-                {/*<h6 align="center" className="Alumno"><b>Programa:</b></h6>
-                <h6 align="center" className="negro">{this.state.pagos[0].sigla_programa}</h6>*/}
+                        <div className="Panel row">
+                          <div className=" col-xs-1">     
+                          </div>
+                          <div className=" col-xs-5">
+                              <this.clase alumno={this.state.alumno} sigla={this.state.pagos[0].sigla_programa}/>
+                            </div>
+                          <div className=" col-xs-6">
+                            <h6 align="center" className="Alumno"><b>Nombres:</b></h6>
+                            <h6 align="center" className="negro">{this.state.pagos[0].apeNom}</h6>
+                            <h6 align="center" className="Alumno"><b>Estado del alumno:</b></h6>
+                            <h6 align="center" className="negro">{this.state.estadoAlumno}</h6>
+                          {/*<h6 align="center" className="Alumno"><b>Programa:</b></h6>
+                          <h6 align="center" className="negro">{this.state.pagos[0].sigla_programa}</h6>*/}
+                            <div  className=" center espacio2">
+                              <button  type="submit"  onClick={this.editarConfiguracion}  className="waves-effect waves-light btn-small "> Editar estado 
+                                  <i className="large material-icons left">edit</i>
+                              </button>
+                          </div>
+                          </div>
+                        </div>
               </div>
-              <div className=" col-xs-9">
+              <div className=" col-xs-1">     
+                </div>
+            
+              <div className=" col-xs-8">
               {/* <div className="center-xs-12 margen_top">
                 <h5 className="text-align center">Filtros</h5>
               </div> */}

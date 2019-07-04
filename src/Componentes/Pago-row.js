@@ -362,6 +362,14 @@ class PagoRow extends React.Component {
       //document.getElementById(conceptos)
 
       this.setState({
+        desabilitar3: false
+      })
+
+      this.setState({
+        desabilitar4: false
+      })
+
+      this.setState({
         desabilitar5: false
       })
     }
@@ -957,7 +965,7 @@ class PagoRow extends React.Component {
             <label className="row center-xs color_white">
               <input
                 onClick={this.toggleChange}
-                className="checkbox1"
+                className="checkbox2"
                 checked = {this.state.isChecked}
                 id={this.props.pago.idRec + "validar"}
                 type="checkbox"

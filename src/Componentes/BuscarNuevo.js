@@ -60,9 +60,9 @@ class BuscarNuevo extends React.Component {
                 importe: '',
                 fecha: '',
                 estado: '',
-                codAlum: '',//m
-                idProg: '',//m
-                siglaPrograma: '',//m
+                codAlum: '',
+                idProg: '',
+                siglaPrograma: '',
             },
 
             estado: false,
@@ -405,8 +405,8 @@ class BuscarNuevo extends React.Component {
                             moneda: '',
                             importe: '',
                             estado: '',
-                            codAlumno: '',//m
-                            programa: ''//m
+                            codAlumno: '',
+                            programa: ''
                         }
 
                         let pendiente_estado;
@@ -426,9 +426,9 @@ class BuscarNuevo extends React.Component {
                             listadoRec.idAlum = pendienteAsignacion[i].id_alum;
                             listadoRec.moneda = 'SOL';
                             listadoRec.importe = 'S/' + pendienteAsignacion[i].importe;
-                            listadoRec.estado = pendiente_estado;//m
-                            listadoRec.codAlumno = pendienteAsignacion[i].codAlumno;//m
-                            listadoRec.programa = pendienteAsignacion[i].programa;//m
+                            listadoRec.estado = pendiente_estado;
+                            listadoRec.codAlumno = pendienteAsignacion[i].codAlumno;
+                            listadoRec.programa = pendienteAsignacion[i].programa;
 
                         } else if (pendienteAsignacion[i].moneda == '113') {
 
@@ -440,9 +440,9 @@ class BuscarNuevo extends React.Component {
                             listadoRec.idAlum = pendienteAsignacion[i].id_alum;
                             listadoRec.moneda = 'DOL';
                             listadoRec.importe = '$ ' + pendienteAsignacion[i].importe;
-                            listadoRec.estado = pendiente_estado;//m
-                            listadoRec.codAlumno = pendienteAsignacion[i].codAlumno;//m
-                            listadoRec.programa = pendienteAsignacion[i].programa;//m
+                            listadoRec.estado = pendiente_estado;
+                            listadoRec.codAlumno = pendienteAsignacion[i].codAlumno;
+                            listadoRec.programa = pendienteAsignacion[i].programa;
 
                         } else {
 
@@ -454,9 +454,9 @@ class BuscarNuevo extends React.Component {
                             listadoRec.idAlum = pendienteAsignacion[i].id_alum;
                             listadoRec.moneda = ' ';
                             listadoRec.importe = pendienteAsignacion[i].importe;
-                            listadoRec.estado = pendiente_estado;//m
-                            listadoRec.codAlumno = pendienteAsignacion[i].codAlumno;//m
-                            listadoRec.programa = pendienteAsignacion[i].programa;//m
+                            listadoRec.estado = pendiente_estado;
+                            listadoRec.codAlumno = pendienteAsignacion[i].codAlumno;
+                            listadoRec.programa = pendienteAsignacion[i].programa;
                         }
                         lista.push(listadoRec);
 
@@ -508,9 +508,9 @@ class BuscarNuevo extends React.Component {
                     importe: 'S/ ' + objRec[0].importe,
                     fecha: objRec[0].fecha,
                     estado: objRecibo_estado,
-                    codAlumno: objRec[0].codAlum,//m
-                    programa: objRec[0].idProg,//m
-                    siglaPrograma: objRec[0].siglaProg,//m
+                    codAlumno: objRec[0].codAlum,
+                    programa: objRec[0].idProg,
+                    siglaPrograma: objRec[0].siglaProg,
                 }
             });
         } else if (objRec[0].moneda == '113') {
@@ -523,9 +523,9 @@ class BuscarNuevo extends React.Component {
                     importe: '$ ' + objRec[0].importe,
                     fecha: objRec[0].fecha,
                     estado: objRecibo_estado,
-                    codAlumno: objRec[0].codAlum,//m
-                    programa: objRec[0].idProg,//m
-                    siglaPrograma: objRec[0].siglaProg,//m
+                    codAlumno: objRec[0].codAlum,
+                    programa: objRec[0].idProg,
+                    siglaPrograma: objRec[0].siglaProg,
                 }
             });
         } else {
@@ -538,9 +538,9 @@ class BuscarNuevo extends React.Component {
                     importe: objRec[0].importe,
                     fecha: objRec[0].fecha,
                     estado: objRecibo_estado,
-                    codAlumno: objRec[0].codAlum,//m
-                    programa: objRec[0].idProg,//m
-                    siglaPrograma: objRec[0].siglaProg,//m
+                    codAlumno: objRec[0].codAlum,
+                    programa: objRec[0].idProg,
+                    siglaPrograma: objRec[0].siglaProg,
                 }
             });
         }
@@ -815,7 +815,6 @@ class BuscarNuevo extends React.Component {
 
         console.log("---ALUMNO DEPUES DEL CLICK GUARDAR ---"); //VERIFICAR CON LA CONSOLA
         console.log(this.state.alumno);
-        //ANTHONY	
         //alert(this.state.alumno.codAlumno);		
         //alert(this.state.alumno.nom_programa);
 
@@ -830,7 +829,7 @@ class BuscarNuevo extends React.Component {
 
         let id_alum = this.state.objRecaudaciones[0].codAlum;
         let id_prog = this.state.objRecaudaciones[0].idProg;
-        let siglaPrograma = '-'; //m-----IMPORTAAAA
+        let siglaPrograma = '-'; //-----IMPORTAAAA
         try {
             id_alum = this.state.alumno.codAlumno;
             id_prog = this.state.alumno.idPrograma;
@@ -853,8 +852,8 @@ class BuscarNuevo extends React.Component {
                     importe: 'S/ ' + state_importe,
                     fecha: state_fecha,
                     estado: objRecibo_estado,
-                    codAlumno: id_alum,//m
-                    programa: id_prog,//m
+                    codAlumno: id_alum,
+                    programa: id_prog,
                     siglaPrograma: siglaPrograma,
                 }
             });
@@ -868,8 +867,8 @@ class BuscarNuevo extends React.Component {
                     importe: '$ ' + state_importe,
                     fecha: state_fecha,
                     estado: objRecibo_estado,
-                    codAlumno: id_alum,//m
-                    programa: id_prog,//m
+                    codAlumno: id_alum,
+                    programa: id_prog,
                     siglaPrograma: siglaPrograma,
                 }
             });
@@ -883,7 +882,7 @@ class BuscarNuevo extends React.Component {
                     importe: state_importe,
                     fecha: state_fecha,
                     estado: objRecibo_estado,
-                    codAlumno: id_alum,//m
+                    codAlumno: id_alum,
                     programa: id_prog,
                     siglaPrograma: siglaPrograma,
                 }
@@ -952,7 +951,7 @@ class BuscarNuevo extends React.Component {
         let state_moneda = this.state.objRecaudaciones[0].moneda;
 
         let id_alum = this.state.objRecaudaciones[0].idAlum;
-        let id_prog = this.state.objRecaudaciones[0].idProg;//m
+        let id_prog = this.state.objRecaudaciones[0].idProg;
         let id_Rec = this.state.objRecaudaciones[0].idRec;
 
         let objRecibo_estado = "false";
@@ -968,9 +967,9 @@ class BuscarNuevo extends React.Component {
                     importe: 'S/ ' + state_importe,
                     fecha: state_fecha,
                     estado: objRecibo_estado,
-                    codAlumno: '',//m
-                    programa: '',//m
-                    siglaProg: '',//m
+                    codAlumno: '',
+                    programa: '',
+                    siglaProg: '',
                 }
             });
         } else if (state_moneda == '113') {
@@ -983,9 +982,9 @@ class BuscarNuevo extends React.Component {
                     importe: '$ ' + state_importe,
                     fecha: state_fecha,
                     estado: objRecibo_estado,
-                    codAlumno: '',//m
-                    programa: '',//m
-                    siglaProg: '',//m
+                    codAlumno: '',
+                    programa: '',
+                    siglaProg: '',
                 }
             });
         } else {
@@ -998,15 +997,15 @@ class BuscarNuevo extends React.Component {
                     importe: state_importe,
                     fecha: state_fecha,
                     estado: objRecibo_estado,
-                    codAlumno: '',//m
-                    programa: '',//m
-                    siglaProg: '',//m
+                    codAlumno: '',
+                    programa: '',
+                    siglaProg: '',
                 }
             });
         }
 
-        if (this.state.estado || this.state.detalleRecaudaciones.estado == "true") {//m Y ANTHONY
-            fetch(CONFIG + '/recaudaciones/desasignar/' + id_Rec)//m------DESASIGNAR
+        if (this.state.estado || this.state.detalleRecaudaciones.estado == "true") {
+            fetch(CONFIG + '/recaudaciones/desasignar/' + id_Rec)//DESASIGNAR
                 .then((response) => {
                     if (response) {
                         console.log(response);
@@ -1240,7 +1239,7 @@ class BuscarNuevo extends React.Component {
                 }
             })
             .catch((error) => {
-                swal("Algo salío mal", "", "error");//MIGUEL CORREGIR
+                swal("Algo salío mal", "", "error");
                 console.log(error);
             });
         e.preventDefault();

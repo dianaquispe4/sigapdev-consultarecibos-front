@@ -350,13 +350,9 @@ Filtrar=(e)=>{
     })
     .then((programa) => {
     var alumnoprograma = programa;
-    //listado1[i].alumnoPrograma = 
     var listadoOpcionesCodigos = [];
     var listadoOpcionesProgramas = [];
-    /*console.log("ALUMNO PROGRAM RECIBIDO");
-    console.log(alumnoprograma);
-    console.log("longitud del array alumno programa recibido")
-    console.log(alumnoprograma.length);*/
+
 
     listado1[i].alumnoPrograma = programa;
      
@@ -369,9 +365,7 @@ Filtrar=(e)=>{
      
     
     }
-    /*
-    console.log("programa leido");
-    console.log(programa);*/
+
     })
     .catch(error => {
     // si hay algún error lo mostramos en consola

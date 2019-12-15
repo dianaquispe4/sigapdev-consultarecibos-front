@@ -48,8 +48,6 @@ class LoginForm extends React.Component {
             return response.json()
             })
             .then((pagos) => {
-            // console.log("pagos recibidos");
-            // console.log(pagos);
              if(pagos.length>0){
 
                 
@@ -77,6 +75,15 @@ class LoginForm extends React.Component {
     e.preventDefault();
     
   }
+
+  AsignacionPresupuesto=(e)=>{
+
+    browserHistory.push('/vista/presupuesto');
+    // console.log("Vista presupuesto");
+    e.preventDefault();
+  }
+
+
   NuevoLogin=(e)=>{
     
     browserHistory.push('/vista/loginNyA');
@@ -107,6 +114,19 @@ class LoginForm extends React.Component {
     }
   }
 
+  Regresar=(e)=>{
+      
+    browserHistory.push('/vista/loginFormAdmi'); //se añadio la ruta
+    e.preventDefault();
+    
+  }
+
+  RegresarAdmin=(e)=>{
+    
+    browserHistory.push('/'); //se añadio la ruta
+    e.preventDefault();
+    
+  }
   onChange(e) {
     this.setState({nombres: e.target.value});
   }
@@ -122,9 +142,9 @@ class LoginForm extends React.Component {
       <nav>
     <div className="nav-wrapper azul">
       <ul id="nav-mobile" className="right hide-on-med-and-down">
-       {/*  <li><a onClick={this.VistaNueva} >VistaNueva</a></li> */}
-        <li><a onClick={this.VistaNueva2} >  <i className="small material-icons right">check_box</i>Asignar Programa</a></li>
-        {/*<li><a onClick={this.VistaTablaCreada} ><i className="small material-icons right">pageview</i>Ver tabla</a></li>*/}
+        <li><a onClick={this.VistaNueva2}><i className="small material-icons right">check_box</i>Asignar Programa</a></li>
+        <li><a onClick={this.AsignacionPresupuesto}><i className="small material-icons right">check_box</i>Presupuesto Masivo</a></li>
+		<li ><a className="seleccionar" onClick={this.RegresarAdmin} >Salir<i className="material-icons right">reply</i></a></li>																													  
       </ul>
     </div>
   </nav>
@@ -146,7 +166,7 @@ class LoginForm extends React.Component {
     
       </form>
       <br/>
-      <p className="row center-xs centrar colorI">¿No te acuerdas tu codigo?</p>
+      
       <u className="colorI">
       <a  onClick={this.NuevoLogin} href="" className="row center-xs centrar colorI">
       Ingresa por tus nombres</a>

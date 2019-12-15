@@ -68,28 +68,37 @@ class PagoRow extends React.Component {
   idconcepto(valor) {
 
     let id_concepto = "";
+    // console.log("valor:  "+valor);
+    // console.log("tamaño " +this.state.array.length)  ;
 
     for (let i = 0; i < this.props.datos.length; i++) {
       if (valor == this.props.datos[i].concepto) {
         id_concepto = this.props.datos[i].idConcepto;
+        //  console.log("el valor" +valor +"es igual a"+this.props.datos[i].concepto);
       }
 
     }
+    // console.log("el concepto es : "+id_concepto);
     return id_concepto;
   }
 
   idmoneda(valor) {
+    // console.log("MONEDAS");
     let id_moneda = "";
-
+    // console.log("tamaño " +this.props.datosmonedas.length)  ;
+    // console.log("moneda 1" +this.props.datosmonedas[1].moneda)  ;
+    // console.log("valor_monedas:  "+valor);
 
     for (let i = 0; i < this.props.datosmonedas.length; i++) {
 
       if (valor == this.props.datosmonedas[i].moneda) {
         id_moneda = this.props.datosmonedas[i].id_moneda;
+        //  console.log("el valor la moneda" +valor +"es igual a "+this.props.datosmonedas[i].id_moneda);
       }
 
 
     }
+    // console.log("la moneda es  : "+id_moneda);
     return id_moneda;
 
   }
@@ -104,6 +113,7 @@ class PagoRow extends React.Component {
   }
 
   componentWillUpdate() {
+    //console.log("idconcepto : "+this.state.idconcepto);
   }
 
   handleChange = (selectedOption) => {
@@ -114,6 +124,8 @@ class PagoRow extends React.Component {
         selectedOption: selectedOption,
         idconcepto: this.idconcepto(selectedOption.value)
       });
+      // console.log(`Option selected:`, selectedOption);
+      // console.log("idconcepto : "+this.idconcepto(selectedOption.value));
     } else {
       swal("Seleccione una opcion", "", "info");
     }
@@ -136,6 +148,10 @@ class PagoRow extends React.Component {
         })
 
       }
+
+
+      // console.log(`Option selected:`, selectedOption);
+      // console.log("idconcepto : "+this.idmoneda(selectedOption.value));
     } else {
       swal("Seleccione una opcion", "", "info");
     }
@@ -146,6 +162,8 @@ class PagoRow extends React.Component {
       this.setState({
         selectedOption3: selectedOption,
       });
+       console.log(`Option selected:`, this.state.selectedOption3.value);
+      // console.log("idconcepto : "+this.idmoneda(selectedOption.value));
     } else {
       swal("Seleccione una opcion", "", "info");
     }
@@ -156,6 +174,8 @@ class PagoRow extends React.Component {
       this.setState({
         selectedOption4: selectedOption,
       });
+      // console.log(`Option selected:`, selectedOption);
+      // console.log("idconcepto : "+this.idmoneda(selectedOption.value));
     } else {
       swal("Seleccione una opcion", "", "info");
     }
@@ -164,6 +184,7 @@ class PagoRow extends React.Component {
 
   colocar = () => {
     var checkbox = document.getElementById(this.props.pago.idRec);
+    console.log(checkbox.id);
     var checkboxID = checkbox.id;
     this.props.Funciones(checkboxID);
   }
@@ -181,7 +202,7 @@ class PagoRow extends React.Component {
 
     var digitado = "N";
     var remitido = "N";
-    //desde aca
+
     for(let x = 0; x<this.props.configuraciones.length;x++){
       if(this.props.configuraciones[x].idConfiguracion == 5){
         remitido = this.props.configuraciones[x].estado;
@@ -191,10 +212,19 @@ class PagoRow extends React.Component {
       }
     }
 
+    console.log("Digitado:" + digitado)
+    console.log("Remitido:" + remitido)
+
 
     if (estadoAlumno == "M" && digitado == "S") {
       var editConcepto;
       editConcepto = this.props.pago.idRec.toString() + this.props.pago.concepto;
+
+      var conceptoEdit = this.props.pago.concepto;
+
+      //document.getElementById(editConcepto).value= conceptoEdit;
+      //document.getElementById(editConcepto).disabled = false;
+      //document.getElementById(editConcepto).style.background='#F2F2F2';
 
       this.setState({
         desabilitar: false
@@ -208,9 +238,15 @@ class PagoRow extends React.Component {
       var editFecha;
       var fechaEdit = this.props.pago.fecha;
       var anioFecha = fechaEdit.substring(0, 4);
+      console.log("AÑO");
+      console.log(anioFecha);
 
       var mesFecha = fechaEdit.substring(5, 7);
+      console.log("MES");
+      console.log(mesFecha);
       var diaFecha = fechaEdit.substring(8, 10);
+      console.log("DIA");
+      console.log(diaFecha);
 
       var fechaVolteada = diaFecha + "-" + mesFecha + "-" + anioFecha;
 
@@ -240,6 +276,16 @@ class PagoRow extends React.Component {
       document.getElementById(editImporte).style.background = '#F2F2F2';
       document.getElementById(editImporte).focus();
 
+      /*var editCuentaBanco;
+      var num = 250296;
+      editCuentaBanco = this.props.pago.idRec.toString() + num.toString() + "ctabanco";
+      var __cuentabanco__ = this.props.pago.descripcion_tipo;
+
+      document.getElementById(editCuentaBanco).value = __cuentabanco__;
+      document.getElementById(editCuentaBanco).disabled = false;
+      document.getElementById(editCuentaBanco).style.background = '#F2F2F2';
+      document.getElementById(editCuentaBanco).focus();*/
+
       this.setState({
         desabilitar3: false
       })
@@ -251,6 +297,15 @@ class PagoRow extends React.Component {
       this.setState({
         desabilitar5: false
       })
+      /*var editUbicacion;
+      var num = 250296;
+      editUbicacion = this.props.pago.idRec.toString() + num.toString() + "ubicacion";
+      var __ubicacion__ = this.props.pago.descripcion_ubi;
+
+      document.getElementById(editUbicacion).value = __ubicacion__;
+      document.getElementById(editUbicacion).disabled = false;
+      document.getElementById(editUbicacion).style.background = '#F2F2F2';
+      document.getElementById(editUbicacion).focus();*/
 
       var numRecibo;
       numRecibo = this.props.pago.idRec.toString() + this.props.pago.numero;
@@ -259,8 +314,10 @@ class PagoRow extends React.Component {
       document.getElementById(numRecibo).value = numReciboEdit;
       document.getElementById(numRecibo).disabled = false;
       document.getElementById(numRecibo).style.background = '#F2F2F2';
+      console.log(estadoAlumno);
     }
     else{
+      //no haga ni pincho
     }
     if(estadoAlumno != "M" && remitido == "S"){
       var editCiclo;
@@ -274,8 +331,15 @@ class PagoRow extends React.Component {
       var editFecha;
       var fechaEdit = this.props.pago.fecha;
       var anioFecha = fechaEdit.substring(0, 4);
+      console.log("AÑO");
+      console.log(anioFecha);
+
       var mesFecha = fechaEdit.substring(5, 7);
+      console.log("MES");
+      console.log(mesFecha);
       var diaFecha = fechaEdit.substring(8, 10);
+      console.log("DIA");
+      console.log(diaFecha);
 
       var fechaVolteada = diaFecha + "-" + mesFecha + "-" + anioFecha;
 
@@ -284,16 +348,18 @@ class PagoRow extends React.Component {
       document.getElementById(editFecha).disabled = false;
       document.getElementById(editFecha).style.background = '#F2F2F2';
 
-      var editImporte;
+      /*var editImporte;
       var num = 250296;
       editImporte = this.props.pago.idRec.toString() + num.toString() + "importe";
       var _importe_ = this.props.pago.importe;
 
       document.getElementById(editImporte).value = _importe_;
-      document.getElementById(editImporte).disabled = true;
+      document.getElementById(editImporte).disabled = false;
       document.getElementById(editImporte).style.background = '#F2F2F2';
-      document.getElementById(editImporte).focus();
-      
+      document.getElementById(editImporte).focus();*/
+
+
+      //document.getElementById(conceptos)
 
       this.setState({
         desabilitar3: false
@@ -308,7 +374,11 @@ class PagoRow extends React.Component {
       })
     }
     else{
+      //no haga ni pincho
     }
+    //console.log("No tiene permiso para editar");
+    //swal("No es posible realizar cambios", "", "info");
+
 
   }
 
@@ -355,6 +425,8 @@ class PagoRow extends React.Component {
     var prueba;
     stringss = this.props.pago.idRec.toString() + this.props.pago.idAlum.toString();
     prueba = document.getElementById(stringss).value.replace(/^(\d{2})[-\/](\d{2})[-\/](\d{4})$/g, '$3-$2-$1');
+
+    console.log(prueba)
     if (prueba == "") {
       prueba = this.props.pago.fecha.replace(/^(\d{2})[-\/](\d{2})[-\/](\d{4})$/g, '$3-$2-$1');
     } else {
@@ -386,10 +458,8 @@ class PagoRow extends React.Component {
 
   }
 
-  //codigo -> 110815250296importe
-
   SeleccionImporte = () => {
-    
+
     var num = 250296;
     var stringss;
     var importe;
@@ -467,6 +537,7 @@ class PagoRow extends React.Component {
   editarObservacion = () => {
 
     var obs = this.props.pago.observacion;
+    console.log("obs: " + obs)
     //var estadoAlumno = this.props.pago.estado;
     var idRecG = "";
     idRecG = this.SeleccionIdRec();
@@ -497,6 +568,7 @@ class PagoRow extends React.Component {
               if (value != '') {
                 fetch(CONFIG + 'recaudaciones/alumno/concepto/obs/' + value + '/' + idRecG)
                   .then((resp) => {
+                    console.log(resp)
                     if (!(resp == true)) {
                       swal("Editado exitoso!", "", "success").then(function () { // te descubri abel fake :v
                         window.location.reload();
@@ -566,9 +638,9 @@ class PagoRow extends React.Component {
   GuardarFecth = () => {
 
     var estadoAlumno;
-
     estadoAlumno = this.props.pago.estado;
 
+    if (estadoAlumno == "M") {
       var cicloG = "";
       cicloG = this.SeleccionCiclo();
 
@@ -597,6 +669,7 @@ class PagoRow extends React.Component {
       ctabanco = this.SeleccionCtaBanco();
 
       var validado = null;
+      console.log("Validado: " + String(this.state.isChecked));
       validado = String(this.state.isChecked);
 
       fetch(CONFIG + "recaudaciones/alumno/concepto/actualizar",
@@ -626,6 +699,7 @@ class PagoRow extends React.Component {
           return response.json()
         })
         .then((resp) => {
+          console.log(resp);
           if (resp == true) {
             swal("Editado exitoso!", "", "success").then(function () {
               window.location.reload();
@@ -641,6 +715,103 @@ class PagoRow extends React.Component {
           swal("Oops, Algo salió mal!!", "", "error")
           console.error(error)
         });
+
+
+
+    } else {
+
+      var cicloG = "";
+      cicloG = this.SeleccionCiclo();
+
+      var conceptoG = "";
+      conceptoG = this.SeleccionConcepto();
+
+      var numeroReciboG = "";
+      numeroReciboG = this.SeleccionNumeroRecibo();
+
+      var fechaG = "";
+      fechaG = this.SeleccionFecha();
+
+      var idRecG = "";
+      idRecG = this.SeleccionIdRec();
+
+      var idConceptoG = "";
+      idConceptoG = this.SeleccionIdConceptoG();
+
+      var fechaG = "";
+      fechaG = this.SeleccionFecha();
+      console.log("FECHA BIEN FEIK");
+      console.log(fechaG);
+
+      var importe = "";
+      importe = this.SeleccionImporte();
+
+      var ubicacion = "";
+      ubicacion = this.SeleccionUbicacion();
+
+      var ctabanco = "";
+      ctabanco = this.SeleccionCtaBanco();
+
+      var validado = null;
+      console.log("Validado: " + String(this.state.isChecked));
+      validado = String(this.state.isChecked);
+
+      fetch(CONFIG + "recaudaciones/alumno/concepto/actualizar",
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          method: "POST",
+          body: JSON.stringify(
+            {
+              "idRec": idRecG,
+              "ciclo": cicloG,
+              "concepto": conceptoG,
+              "recibo": numeroReciboG,
+              "fecha": fechaG,
+              "id_concepto": this.state.idconcepto,
+              "id_moneda": this.state.idmoneda,
+              "importe": importe,
+              "ubicacion": ubicacion,
+              "ctabanco": ctabanco,
+              "validado": validado
+            }
+
+          )
+        })
+        .then((response) => {
+          return response.json()
+        })
+        .then((resp) => {
+          console.log(resp);
+          if (resp == true) {
+            swal("Editado exitoso!", "", "success").then(function () {
+              window.location.reload();
+            }
+            );
+          } else {
+            swal("Oops, el editado no se concreto", "", "info");
+          }
+
+        })
+        .catch(error => {
+
+          swal("Oops, Algo salió mal!!", "", "error")
+          console.error(error)
+        });
+
+
+
+      /*
+          console.log("No tiene permiso para guargar")
+          swal("No es posible realizar cambios", "", "info");*/
+
+
+
+    }
+
+
+
   }
 
   render() {

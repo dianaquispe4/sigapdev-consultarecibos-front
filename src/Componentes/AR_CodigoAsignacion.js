@@ -67,7 +67,7 @@ class AR_CodigoAsignacion extends React.Component {
     }
 
     render(){
-        if(this.props.codAlum != ""){
+        if(this.props.codAlum != ""){// ANTHONY
             return(
                 <div>
                     {this.props.codAlum} 

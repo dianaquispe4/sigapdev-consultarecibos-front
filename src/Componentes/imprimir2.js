@@ -228,8 +228,6 @@ class Imprimir2 extends React.Component {
       console.log(listafinal);
 
 
-      
-/*
       var conceptos=[];
       var aux =this.props.conceptos;
       console.log(conceptos[3]);
@@ -237,19 +235,11 @@ class Imprimir2 extends React.Component {
       for (let j = 0; j<aux.length; j++) {
           conceptos.push(aux[j].concepto);
           console.log("100% real no fake "+j)
+
       }
-      console.log("datos");
-      console.log(this.props.seleccionado);
 
     console.log("listado de conceptos obtenidos");
     console.log(conceptos);
-      */
-    var conceptos=[];
-    var aux = listafinal;
-
-    for(let j = 0; j<aux.length; j++){
-      conceptos.push(aux[j][0].concepto);
-    }
 
       var datosDelformulario=[];
 

@@ -60,6 +60,7 @@ class App extends React.Component {
       conceptos:[],
       configuraciones:[],
       costosP: {},
+      costosP2: {},
       concepto:[],
       datos:[],
       monedas:[],
@@ -69,9 +70,18 @@ class App extends React.Component {
       tipos:[],
       tiposv1:[],
       defuncion: 1,
+      NroModal: 0,
       estadoAlumno:"",
+      idPrograma:'',
+      presupuestoActual:"",//nuevo
+      presupuesto:"", //nuevo
+      mostrar:true,
+      mostrar_benef:true,//nuevo
+      mostrar_costo_final:true,//nuevo
       valor: true,
-      estadoAlumnoInput:{value:"-1",label:"Escoga un nuevo estado"},
+      detallePresupuesto:{},
+      estadoAlumnoInput:{value:"-1",label:"Seleccione un nuevo estado"},
+      TipopresupuestoInput:{value:"-1",label:"Seleccione un presupuesto"},
       optionsEstadoAlumno:[{value:"casado",label:"Casado"},
       {value:"soltero",label:"Soltero"},
       {value:"divorciado",label:"Divorciado"},
@@ -79,8 +89,13 @@ class App extends React.Component {
       {value:"separado",label:"Separado"},
       {value:"conviviente",label:"Conviviente"},
       {value:"fallecido",label:"Fallecido"}
-    ],
-      showModalConfiguracion:false,
+      ],
+    optionsProgramas:[],
+    optionsTipoPrograma:[],
+    showModalConfiguracion:false,
+    beneficios:[],
+    idProgramaOriginal:0,
+    suma: true
     }
     this.clase='';
     this.alumno = '';
@@ -102,7 +117,7 @@ class App extends React.Component {
     this.seleccionar=this.seleccionar.bind(this);
     this.enviar=this.enviar.bind(this);
     this.Funcion=this.Funcion.bind(this);
-    this.Regresar=this.Regresar.bind(this);
+    this.Regresar2=this.Regresar2.bind(this);
     this.openNav = this.openNav.bind(this);
     this.closeNav = this.closeNav.bind(this);
     this.show_or_hide = this.show_or_hide.bind(this);
@@ -110,10 +125,6 @@ class App extends React.Component {
 componentDidUpdate(){
     if(this.state.estado!=0){
       var checks=document.getElementsByClassName("checkbox1");
-      /*console.log(checks[0].id);
-      console.log(this.state.estado);
-      checks[0].checked=true;*/
-
       for(let i=0;i<checks.length;i++){
          var id=checks[i].id;
          for(let j=0;j<this.state.pagocero.length;j++){
@@ -121,10 +132,8 @@ componentDidUpdate(){
              if(this.state.pagocero[j].check==true){
                if(id==codigo){
                  checks[i].checked=true;
-
                }
              }
-
         }
 
         }
@@ -132,11 +141,24 @@ componentDidUpdate(){
        else{
          this.setState({estado:1})
         }
+
+    
+ }
+
+ hallarBeneficios=(codigo)=>{
+   fetch(CONFIG+'beneficio/listar/' + codigo)
+  .then(response=>{
+    return response.json()
+  })
+  .then(beneficios=>{
+    this.setState({
+      beneficios
+    })
+  })
  }
 
   colocar=()=>{
     var check=document.getElementById("observacion").checked;
-    //console.log(check);
     if(check){
       this.setState({
 
@@ -153,7 +175,6 @@ componentDidUpdate(){
 
   validado=()=>{
     var check=document.getElementById("validar").checked;
-    //console.log(check);
     if(check){
       this.setState({
         validado:true
@@ -166,8 +187,106 @@ componentDidUpdate(){
     }
   }
 
+  //nuevo
+  mostrarOcultar=()=>{
+    if(this.state.mostrar){    
+      document.getElementById('mostrar-ocultar').style.display = 'block';
+      this.setState({
+        mostrar:false
+      })
+    }
+    else{
+      document.getElementById('mostrar-ocultar').style.display = 'none';
+      this.setState({
+        mostrar:true
+      })
+
+    }
+  }
+
+  //nuevo
+  mostrarCostoFinal=()=>{
+    if(this.state.mostrar_costo_final){    
+      document.getElementById('costo-final').style.display = 'flex';
+      this.setState({
+        mostrar_costo_final:false
+      })
+    }
+    else{
+      document.getElementById('costo-final').style.display = 'none';
+      this.setState({
+        mostrar_costo_final:true
+      })
+
+    }
+  }
+
+  //nuevo
+  mostrarBeneficio = () =>{
+    if(this.state.mostrar_benef){    
+      document.getElementById('tabla-beneficios').style.display = 'block';
+      this.setState({
+        mostrar_benef:false
+      })
+    }
+    else{
+      document.getElementById('tabla-beneficios').style.display = 'none';
+      this.setState({
+        mostrar_benef:true
+      })
+
+    }
+  } 
+
 
   componentWillMount() {
+
+
+      setTimeout(() => {
+        
+
+    fetch(CONFIG+'alumno/alumnoprograma/programa/'+this.state.idPrograma)
+   .then((response)=>{
+     return response.json();
+   })
+   .then((programa)=>{
+     console.log(programa)
+     this.setState({
+       presupuestoActual : programa.nomPrograma,
+       optionsTipoPrograma : [{value : programa.idPrograma,label:this.state.idPrograma+" - "+programa.nomPrograma}]/**/ 
+     })
+   })
+   .catch(error=>{
+     console.log(error)
+   })
+   console.log(this.state.optionsTipoPrograma)
+
+   let option=[];
+   let a = {}
+   fetch(CONFIG+'alumno/alumnoprograma/programa/presupuesto/'+this.state.idPrograma)
+   .then((response)=>{
+     return response.json();
+    })
+    .then((programa)=>{
+      console.log(programa)
+  for(let i=0;i<programa.length;i++){
+    a={
+      value : programa[i].programa_presupuesto,
+      label : programa[i].tarifa+'--Ciclo: '+programa[i].ciclo
+    }
+    option.push(a)
+  }
+  console.log(option)
+
+    })
+    .catch(error=>{
+      console.log(error)
+    })
+    
+    this.hallarBeneficios(this.state.alumno.apeNom);
+  }, 2000);
+
+
     this.pageOfItems = this.pagocero;
     var checkbox_selec=[];
     var nombres = this.state.name;
@@ -331,24 +450,16 @@ this.setState({
 //------
 
 
-
-
     var separador = " "; // un espacio en blanco
     var arregloDeSubCadenas = nombres.split(separador);
-    // console.log("arreglo de subcadenas");
-    // console.log(arregloDeSubCadenas);
     var arreglo = [];
     for (let i = 0; i< arregloDeSubCadenas.length; i++) {
       if(arregloDeSubCadenas[i]!==''){
          arreglo.push(arregloDeSubCadenas[i])
       }
     }
-    // console.log("arreglo sin espacios en blanco");
-    // console.log(arreglo);
 
     var nombrenuevo = arreglo.join(" & ");
-    // console.log("arreglo con join")
-    // console.log(nombrenuevo);
     var nombreAlumno = arreglo.join(" ");
 //ANTERIOR LINK
 //https://modulo-alumno-zuul.herokuapp.com/modulo-alumno-jdbc-client/recaudaciones/alumno/concepto/listar/
@@ -367,10 +478,6 @@ this.setState({
       })
       .then((pagos) => {
 
-
-       /*
-         console.log("pagos de la consulta de acuerdo el nombre ingresado");
-        console.log(pagos); */
         var auxPagos = pagos;
 
       var alumnoDetalle = {
@@ -384,7 +491,6 @@ this.setState({
 
         );
 
-        // console.log("hola");
       var total=this.state.pagocero;
 
      this.state.pagocero.map((pago)=>{
@@ -415,7 +521,6 @@ this.setState({
         console.error(error)
       });
 
-
     }
     else{
       this.clase=AlumnoCodigo
@@ -424,7 +529,6 @@ this.setState({
         .then((response)=>{
             return response.json()
         }).then((datos)=>{
-
 
           console.log("datos");
           console.log(datos);
@@ -435,22 +539,20 @@ this.setState({
             console.error(error)
         });
 
-
-
-
-
-
       fetch(CONFIG+'recaudaciones/alumno/concepto/listar_cod/' + nombrenuevo)
       .then((response) => {
         return response.json()
       })
       .then((pagos) => {
 
-
-
          console.log("pagos de la consulta de acuerdo el nombre ingresado");
 
          console.log(pagos);
+         console.log(pagos[0].idPrograma)
+         this.setState({
+           idPrograma : pagos[0].idPrograma
+         })
+
          console.log("UN IDREC");
         // console.log(pagos[1].idRec);
         var auxPagos = pagos;
@@ -465,8 +567,6 @@ this.setState({
         },
 
         );
-        // console.log("hola");
-     //   this.arreglosReporte(this.state.lista_aux);
       var total=this.state.pagocero;
 
      this.state.pagocero.map((pago)=>{
@@ -478,35 +578,102 @@ this.setState({
       .then((response)=>{
           return response.json()
       }).then((comprobacion)=>{//costos
-          console.log("wea");
           console.log(comprobacion);
+          if(this.state.suma){
+            if(this.state.costosP.creditos){
+              this.setState({
+                idProgramaOriginal : pagos[0].idPrograma
+              })
+            }
+           else {
+            this.setState({
+              idProgramaOriginal : 0
+            })
+           }
+           this.setState({
+             suma: false
+           })
+          }
           if(comprobacion ==  1 ){
               //console.log("toffe");
               this.reporte_credito(comprobacion,nombrenuevo,auxPagos);
+              setTimeout(() => {
+                this.setState({
+                  costosP2: this.state.costosP
+                })
+                if(this.state.costosP.creditos){
+                  this.setState({
+                    idProgramaMostrar : pagos[0].idPrograma
+                  })
+                }
+               else {
+                this.setState({
+                  idProgramaMostrar : 0
+                })
+               }
+              }, 500);
           }
           else if(comprobacion == 2) {
               //console.log("oso");
               this.reporte_ciclo(nombrenuevo,auxPagos,2);
+              setTimeout(() => {
+                this.setState({
+                  costosP2: this.state.costosP
+                })
+                if(this.state.costosP.creditos){
+                  this.setState({
+                    idProgramaMostrar : pagos[0].idPrograma
+                  })
+                }
+               else {
+                this.setState({
+                  idProgramaMostrar : 0
+                })
+               }
+              }, 500);
           }
           else if(comprobacion == 3){
                if(comprobacion.tipo == "por ciclo"){
                    this.reporte_ciclo(nombrenuevo,auxPagos,0);
+                   setTimeout(() => {
+                    this.setState({
+                      costosP2: this.state.costosP
+                    })
+                    if(this.state.costosP.creditos){
+                      this.setState({
+                        idProgramaMostrar : pagos[0].idPrograma
+                      })
+                    }
+                   else {
+                    this.setState({
+                      idProgramaMostrar : 0
+                    })
+                   }
+                  }, 500);
                }
                else{
                    this.reporte_credito(comprobacion,nombrenuevo,auxPagos);
+                   setTimeout(() => {
+                    this.setState({
+                      costosP2: this.state.costosP
+                    })
+                    if(this.state.costosP.creditos){
+                      this.setState({
+                        idProgramaMostrar : pagos[0].idPrograma
+                      })
+                    }
+                   else {
+                    this.setState({
+                      idProgramaMostrar : 0
+                    })
+                   }
+                  }, 500);
                }
           }
-/*
-        console.log("costos");
-        console.log(costos);
-        this.setState({costosP: costos})
-*/
       })
       .catch(error=>{
           console.error(error)
       });
-
-
 
       }
     )
@@ -555,11 +722,10 @@ this.setState({
     catch(error){
       //Nothing happens
     }
-    browserHistory.push('/');
+    browserHistory.push('/vista/programas'); //no habia nada solo estaba el slash
     e.preventDefault();
 
   }
-
 
   editarEstado = (e) => {
     e.preventDefault();
@@ -663,9 +829,11 @@ this.setState({
     }
   }
 
-  editarConfiguracion = () => {
+  editarConfiguracion = (e) => {
+    console.log(e.target.value);
     this.setState({
-      showModalConfiguracion:true
+      showModalConfiguracion:true,
+      NroModal:e.target.value
     });
   }
 
@@ -674,7 +842,6 @@ this.setState({
       showModalConfiguracion:false
     });
   }
-
 
   handleChangeSelectEstadoAlumno = (estado) => {
  
@@ -686,42 +853,148 @@ this.setState({
     }
 
   }
+  
+  actualizarProgramaPresupuesto = (mensaje=true) => {
+    //document.getElementById('boton-deshacer').style.display = 'flex';
+    this.guardarPresupuesto()
+    fetch(CONFIG+'recaudaciones/alumno/concepto/actualizarIdProgramaPrespuesto/'+this.state.idPrograma+'/'+this.state.name,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          method: "PATCH",
+        }
+      ).then((response) => {
+        return response.json();
+
+      })
+        .then((defuncion) => {
+          if(mensaje){
+            swal("Presupuesto Asignado Correctamente","","")
+            this.componentWillMount()
+          }
+            
+
+        })
+        .catch(error => {
+          // si hay algún error lo mostramos en consola
+          swal("Oops, Algo salió mal!!", "", "error")
+          console.error(error)
+        });
+	}
+
+  handleChangeSelectTipoPrograma = (estado) => {
+    console.log(estado)
+    this.setState({
+      TipopresupuestoInput:{value: estado.value,label: estado.label}
+    });
+    switch(estado.value){
+      case 1 : this.setState({
+                  detallePresupuesto : { upg: 0, epg:0, derecho:5808, total:5808, valor1:24, valor2:242}
+                });
+                break;
+      case 2 : this.setState({
+                  detallePresupuesto : { upg: 0, epg:0, derecho:5808, total:5808, valor1:24, valor2:242}
+                });
+                break;
+      case 3 : this.setState({
+                  detallePresupuesto : { upg: 0, epg:0, derecho:5808, total:5808, valor1:24, valor2:242}
+                });
+                break;
+      case 4 : this.setState({
+                  detallePresupuesto : { upg: 1816, epg:208, derecho:16488, total:16488, valor1:72, valor2:229}
+                });
+                break;
+      case 5 : this.setState({
+                  detallePresupuesto : { upg: 1816, epg:208, derecho:16488, total:16488, valor1:72, valor2:229}
+                });
+                break;
+      case 6 : this.setState({
+                  detallePresupuesto : { upg: 1816, epg:208, derecho:16488, total:16488, valor1:72, valor2:229}
+                });
+                break;
+      case 7 : this.setState({
+                  detallePresupuesto : { upg: 1816, epg:208, derecho:16488, total:18512, valor1:212, valor2:229}
+                });
+                break;
+      case 8 : this.setState({
+                  detallePresupuesto : { upg: 3000, epg:312, derecho:29472, total:32784, valor1:96, valor2:307}
+                });
+                break;        
+    }
+  
+  }
+
+
+ handleChangeSelectPrograma = (estado) =>{
+   console.log(estado)
+      this.setState({
+        presupuestosInput : {value: estado.value,label: estado.label}
+      });
+
+ }
+
+ sleep=(milliseconds) =>{
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+   if ((new Date().getTime() - start) > milliseconds) {
+    break;
+   }
+  }
+ }
+
+ guardarPresupuesto = () => {
+   console.log("Ya me guarde :v")
+   console.log(this.state.TipoPrograma)
+
+   fetch(CONFIG+'alumno/alumnoprograma/programa/'+this.state.idPrograma)
+   .then((response)=>{
+     return response.json();
+   })
+   .then((programa)=>{
+     console.log(programa)
+     this.setState({
+       presupuestoActual : programa.nomPrograma
+     })
+   })
+   .catch(error=>{
+     console.log(error)
+   })
+ }
 
   render() {
     if (this.state.pagos.length > 0) {
       return (
 
         <div id="main" className="">
-
-            <Modal isOpen={this.state.showModalConfiguracion} toggle={this.closeModal}  
+            <Modal isOpen={this.state.showModalConfiguracion}  toggle={this.closeModal}  
                   aria-labelledby="contained-modal-title-vcenter">
                   <div>
-                  <ModalHeader toggle={this.closeModal}>Configuración de Estudiante</ModalHeader>
-                    <ModalBody>
-                      <h6 align="left" className="Alumno"><b>Estado de alumno:</b></h6>
-                      <h6  align="center"  className="negro">{this.state.estadoAlumno}</h6> 
-                      <Select
-                            name="estadoAlumnoInput"
-                            id="estadoAlumnoInput"
-                            placeholder="Seleccione un estado"
-                            value={this.state.estadoAlumnoInput}
-                            onChange={this.handleChangeSelectEstadoAlumno}
-                            options={this.state.optionsEstadoAlumno}
-                          />
-                    </ModalBody>
-                    <ModalFooter>
-                      <Button color="green" onClick={this.guardarCambios}>Guardar</Button><p>         </p>
-                      <Button color="secondary" onClick={this.closeModal}>Salir</Button>
-                  </ModalFooter>
+                    <ModalHeader toggle={this.closeModal}>Configuración de Estudiante</ModalHeader>
+                      <ModalBody>
+                        <h6 align="left" className="Alumno"><b>Estado de alumno:</b></h6>
+                        <h6  align="center"  className="negro">{this.state.estadoAlumno}</h6> 
+                        <Select
+                              name="estadoAlumnoInput"
+                              id="estadoAlumnoInput"
+                              placeholder="Seleccione un estado"
+                              value={this.state.estadoAlumnoInput}
+                              onChange={this.handleChangeSelectEstadoAlumno}
+                              options={this.state.optionsEstadoAlumno}
+                            />
+                      </ModalBody>
+                      <ModalFooter>
+                        <Button color="green" onClick={this.guardarCambios}>Guardar</Button><p>  </p>
+                        <Button color="secondary" onClick={this.closeModal}>Salir</Button>
+                    </ModalFooter>
                 </div>      
-              </Modal>
+            </Modal>
+            
         {this.state.aparecer?(
         <div>
           <h3>Estado de pagos por alumno
           <ul id="nav-mobile" className=" row right  hide-on-med-and-down">
-              {/*<li ><a className="seleccionar col" onClick={this.seguimientoEgresados} >Seguimiento de Egresados<i className="material-icons right">edit</i></a></li>
-              <li ><a className="seleccionar col" onClick={this.enviarFormulario} >Revisar Beneficio<i className="material-icons right">edit</i></a></li>
-        <li ><a className="seleccionar col" onClick={this.Regresar} >Regresar<i className="material-icons right">reply</i></a></li>*/}
+
               <li ><a className="seleccionar col" onClick={this.openNav} >Ver todo<i className="material-icons right">apps</i></a></li>
           </ul>
           </h3>
@@ -739,23 +1012,25 @@ this.setState({
                             <h6 align="center" className="negro">{this.state.pagos[0].apeNom}</h6>
                             <h6 align="center" className="Alumno"><b>Estado del alumno:</b></h6>
                             <h6 align="center" className="negro">{this.state.estadoAlumno}</h6>
-                          {/*<h6 align="center" className="Alumno"><b>Programa:</b></h6>
-                          <h6 align="center" className="negro">{this.state.pagos[0].sigla_programa}</h6>*/}
-                            <div  className=" center espacio2">
-                              <button  type="submit"  onClick={this.editarConfiguracion}  className="waves-effect waves-light btn-small "> Editar estado 
+
+                            <div  className=" center ">
+                              <button  type="submit"  onClick={e => this.editarConfiguracion(e,"value")}  className="waves-effect waves-light btn-small"> Editar estado 
                                   <i className="large material-icons left">edit</i>
-                              </button>
-                          </div>
+                              </button>              
+                            </div>
+                            
+                            <div className="row">
+                              <div className="col-xs-8 Alumno"><b>Tiene Beneficio:</b></div>
+                              {(this.state.beneficios.length>0)?(<div className="col-xs-1 ">Si</div>):(<div className="col-xs-1">No</div>)}
+                            </div>
+   
                           </div>
                         </div>
               </div>
-              <div className=" col-xs-1">     
-                </div>
+              <div className=" col-xs-1">
+              </div>
             
               <div className=" col-xs-8">
-              {/* <div className="center-xs-12 margen_top">
-                <h5 className="text-align center">Filtros</h5>
-              </div> */}
                 <div className="SplitPane row">
                   <div className="inline col-xs-3 ">
                     <div>
@@ -788,29 +1063,155 @@ this.setState({
                   </div>
                 </div>
               </div>
-
           </div>
-          {/* <div className="SplitPane row center-xs">
-               <button onClick={this.Filtrar}  className="waves-effect waves-light btn-large newbotonFiltrar" type="submit">Filtrar<i className="large material-icons left">filter_list</i></button>
-          </div> */}
-          <hr />
+          
+          <div id="tabla-beneficios">
+            <div className="alcentro ">
+              <div className="col-xs-11 row">
+                <div className="verdeagua cuadro-borde col-xs-1"><b>N°</b></div>
+                <div className="verdeagua cuadro-borde col-xs-2"><b>BENEFICIO</b></div>
+                <div className="verdeagua cuadro-borde col-xs-2"><b>AUTORIZACION</b></div>
+                <div className="verdeagua cuadro-borde col-xs-2"><b>CONDICION</b></div>
+                <div className="verdeagua cuadro-borde col-xs-2"><b>FECHA</b></div>
+                <div className="verdeagua cuadro-borde col-xs-2"><b>RESOLUCION</b></div>
+              </div> 
+            </div>
+            { (this.state.beneficios.length>0) ?
+              Object.keys(this.state.beneficios).map(key=>(
+              
+              <div className="mb-3 alcentro " key={key}>
+                <div className="col-xs-11 row">
+                  <div className="cuadro-borde col-xs-1">{key+1}</div>
+                  <div className="cuadro-borde col-xs-2">{this.state.beneficios[key].benef_otrogado}%</div>
+                  <div className="cuadro-borde col-xs-2">{this.state.beneficios[key].autorizacion}</div>
+                  <div className="cuadro-borde col-xs-2">{this.state.beneficios[key].condicion}</div>
+                  <div className="cuadro-borde col-xs-2">{this.state.beneficios[key].fecha}</div>
+                  <div className="cuadro-borde col-xs-2">{this.state.beneficios[key].resolucion}</div>
+                </div>
+              </div>
+            )) : (<div className="mb-3 alcentro " >
+                    <div className="col-xs-11 row">
+                        <div className="cuadro-borde col-xs-11">Usted no cuenta con ningun beneficio</div>
+                    </div>
+                  </div>)}
+          </div>
+          <div id="mostrar-ocultar">
+          <div >
+              <div className="mt-3  row">
+                <div className="ml-5 alcentro col-xs-2"><b>Presupuesto Actual del Alumno:</b> </div>
+                <div className="alaizquierda col-xs-1">{this.state.idProgramaMostrar}</div>
+              </div>
+          </div>
+            <div >
+              <br></br>
+              <div className="alcentro ml-5">
+                <div className="col-xs-12 row">
+                  <div className="col-xs-1"></div>
+                  <div className="verdeagua cuadro-borde col-xs-2"><b>MATRICULA UPG</b></div>
+                  <div className="verdeagua cuadro-borde col-xs-2"><b>MATRICULA EPG</b></div>
+                  <div className="verdeagua cuadro-borde col-xs-2"><b>DERECHO DE ENSEÑANZA</b></div>
+                  <div className="verdeagua cuadro-borde col-xs-1"><b>TOTAL</b></div>
+                  <div className="verdeagua cuadro-borde col-xs-2"><b>VALOR POR CREDITO</b></div>
+                </div> 
+              </div>
+              <div className="alcentro ml-5">
+                <div className="col-xs-12 row">
+                  <div className="verdeagua cuadro-borde col-xs-1"><b>COSTO REAL</b></div>
+                  <div className="cuadro-borde col-xs-2">S/ {this.state.costosP2.upg}</div>
+                  <div className="cuadro-borde col-xs-2">S/ {this.state.costosP2.epg}</div>
+                  <div className="cuadro-borde col-xs-2">S/ {this.state.costosP2.total}</div>
+                  <div className="cuadro-borde col-xs-1">S/ {this.state.costosP2._Total}</div>
+                  <div className="cuadro-borde col-xs-2">{this.state.costosP2.creditos} x {this.state.costosP2.costo_credito}</div>
+                  <div >
+                    <button onClick={this.mostrarCostoFinal} className="waves-effect waves-light btn-small ml-3 " type="submit">Ver con Beneficios</button>
+                  </div>
+                </div>
+                
+              </div>
+              <div  className="alcentro ml-5">
+                <div id="costo-final" className="col-xs-12 row">
+                  <div className="verdeagua cuadro-borde col-xs-1"><b>COSTO FINAL</b></div>
+                  <div className="cuadro-borde col-xs-2">S/ {this.state.costosP2.d_upg}</div>
+                  <div className="cuadro-borde col-xs-2">S/ {this.state.costosP2.d_epg}</div>
+                  <div className="cuadro-borde col-xs-2">S/ {this.state.costosP2.d_total}</div>
+                  <div className="cuadro-borde col-xs-1">S/ {this.state.costosP2.d_Total}</div>
+                  <div className="cuadro-borde col-xs-2">{this.state.costosP2.creditos} x {this.state.costosP2.costo_credito_d}</div>
+                </div>
+              </div>
 
-          <div className="margen2">
-            <button onClick={this.seleccionar} className="waves-effect waves-light btn-small newbotonSeleccionar start">
+                <br></br>
+                <div className="mt-3 row">
+                <div className="col-xs-1 alcentro ml-5"><b>Presupuestos</b></div>
+                <div className="col-xs-7 ">
+                    <Select className=" mb-3 col-xs-10" 
+                        name="TipoProgramaInput"
+                        id="TipoProgramaInput"
+                        placeholder="Seleccione un presupuesto"
+                        value={this.state.TipopresupuestoInput}
+                        onChange={this.handleChangeSelectTipoPrograma}
+                        options={this.state.optionsTipoPrograma}
+                      />
+
+                </div>  
+              </div>
+                <br></br>
+
+
+              <div className="alcentro ml-5">
+                <div className="col-xs-12 row">
+                  <div className="col-xs-1"></div>
+                  <div className="verdeagua cuadro-borde col-xs-2"><b>MATRICULA UPG</b></div>
+                  <div className="verdeagua cuadro-borde col-xs-2"><b>MATRICULA EPG</b></div>
+                  <div className="verdeagua cuadro-borde col-xs-2"><b>DERECHO DE ENSEÑANZA</b></div>
+                  <div className="verdeagua cuadro-borde col-xs-1"><b>TOTAL</b></div>
+                  <div className="verdeagua cuadro-borde col-xs-2"><b>VALOR POR CREDITO</b></div>
+                </div> 
+              </div>
+              <div className="alcentro ml-5">
+                <div className="col-xs-12 row">
+                  <div className="verdeagua cuadro-borde col-xs-1"><b>COSTO REAL</b></div>
+                  <div className="cuadro-borde col-xs-2">S/ {this.state.detallePresupuesto.upg}</div>
+                  <div className="cuadro-borde col-xs-2">S/ {this.state.detallePresupuesto.epg}</div>
+                  <div className="cuadro-borde col-xs-2">S/ {this.state.detallePresupuesto.derecho}</div>
+                  <div className="cuadro-borde col-xs-1">S/ {this.state.detallePresupuesto.total}</div>
+                  <div className="cuadro-borde col-xs-2">{this.state.detallePresupuesto.valor1} x {this.state.detallePresupuesto.valor2}</div>
+                  
+                </div>
+                
+                
+              </div>
+              
+
+              <div className=" mt-2 mb-3 centrar">
+                <button  onClick={this.actualizarProgramaPresupuesto} className="waves-effect waves-light btn-small ml-3 " type="submit" >Asignar Presupuesto</button>
+                <button id="boton-deshacer" onClick={this.Regresar2}  className="waves-effect waves-light btn-small btn-danger  ml-3 " type="submit" >Deshacer Asignación</button>           
+              </div>
+              
+            </div>           
+          </div>
+
+
+          <div className="margen3">
+            <button onClick={this.seleccionar} className="waves-effect waves-light btn-small newbotonSeleccionar start mt-1">
             Seleccionar todo<i className="large material-icons left">check</i>
             </button>
-
-            <button onClick={this.show_or_hide} className="waves-effect waves-light btn-small newbotonSeleccionar start">
-            Mostrar más
-            </button>
-
-            </div>
+            <button onClick={this.show_or_hide} className="waves-effect waves-light btn-small newbotonSeleccionar start mt-1">
+              Mostrar más
+            </button>            
+            <button type="submit" onClick={this.mostrarBeneficio} className="waves-effect waves-light btn-small newbotonSeleccionar start ml-3 mt-1"> 
+              Ver Beneficio 
+            </button>                        
+            <button onClick={this.mostrarOcultar}  className="waves-effect waves-light btn-small inline-block newbotonSeleccionar start ml-3 mt-1" type="submit"> 
+              Presupuesto
+            </button>   
+            
+          </div>
 
           <div className="row">
             <div className="  col-md-12">
               {/*Inicio*/}
               <div id="mySidebar" class="sidebar">
-                <a href="javascript:void(0)" class="closebtn" onClick={this.closeNav}>×</a>
+                <a href="javascript:void(0)" className="closebtn" onClick={this.closeNav}>×</a>
                 <a href="#" onClick={this.seguimientoEgresados}>Seguimiento de Egresados</a>
                 <a href="#" onClick={this.enviarFormulario}>Revisar Beneficio</a>
                 <a href="#" onClick={this.Regresar}>Regresar</a>
@@ -824,35 +1225,13 @@ this.setState({
               <div className="row">
                 <div className="col-md-7">
                   <Importe importe={this.CalcularImporte()} />
-                  {/* <ImporteDolar importe={this.CalcularImporteDolar()} /> */}
                 </div>
                 <div className="col-md-7">
                 
                   <ImporteDolar importe={this.CalcularImporteDolar()} />
                 </div>
                 <div className="col-md-3">
-                {/* <form action="#">
-                    <label className="row  ">
 
-                      <input
-                        onClick="{this.colocar}"
-                        className="align-self-center"
-                        id="xd"
-                        type="checkbox" />
-                        <span> observacion</span>
-
-
-
-
-
-                        </label>
-
-                  </form> */}
-
-                  <div>
-                  {/* <button  onClick={this.enviar2} listado={this.state.pagocero} className="waves-effect waves-light btn-large botonazul2">Editar<i className="large material-icons left">border_color</i></button>     */}
-
-                  </div>
                 </div>
                 <div className="col-md-8 "></div>
                 <div className="col-md-1 ">
@@ -886,8 +1265,6 @@ this.setState({
                   <Imprimir2 onClick={this.enviar}  validado = {this.state.validado} seleccionado={this.state.seleccionado} listado={this.state.pagocero} conceptos={this.state.conceptos} alumno={this.state.alumno} costos={this.state.costosP} datos={this.state.datosformulario}/>
                 </div>
 
-
-
               </div>
             </div>
           </div>
@@ -908,26 +1285,6 @@ this.setState({
               <FormularioIntermio codigo={this.state.name} idprograma={this.state.pagos[0].idPrograma}/>
             </div>
 
-
-          // <div>
-          //     <h3>Editable
-          // <ul id="nav-mobile" className="right  hide-on-med-and-down"></ul>
-          // </h3>
-          // <hr/>
-
-          // <div className="SplitPane row center-xs">
-          //   <div className="  center-xs-12">
-          //     <table className=" total table ">
-          //       <ComponenteEditable  listado={this.state.pagocero} conceptos={this.state.conceptos} alumno={this.state.alumno}/>
-          //     </table>
-          //       <div className = "row">
-          //       <div className="col-md-6">
-          //             <button  onClick={this.enviar2}  className="waves-effect waves-light btn-large botonazul2" type="submit">Regresar<i className="large material-icons left">arrow_back</i></button>
-          //             </div>
-          //         </div>
-          //       </div>
-          //     </div>
-          // </div>
           )
 
         }
@@ -947,6 +1304,33 @@ this.setState({
 
 
 //obtenemos la fecha del componente FILTROFECHA1
+
+Regresar2=(e)=>{
+  e.preventDefault()
+  console.log("Estoy guardando el presupuesto "+this.state.idProgramaOriginal)
+  fetch(CONFIG+'recaudaciones/alumno/concepto/actualizarIdProgramaPrespuesto/'+0+'/'+this.state.alumno.apeNom,
+    {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: "PATCH",
+    }
+  )
+  .then((defuncion) => {
+      swal("Presupuesto Desasignado Correctamente","","")  
+      this.componentWillMount()
+  })
+  .catch(error => {
+    // si hay algún error lo mostramos en consola
+    swal("Oops, Algo salió mal!!", "", "error")
+    console.error(error)
+  })
+
+  setTimeout(() => {
+    this.componentWillMount()
+  }, 1000);
+}
+
 Filtrar=(e)=>{
   var concep = [];
   concep = this.SeleccionConceptos();
@@ -968,24 +1352,16 @@ Filtrar=(e)=>{
 
   var separadorFiltro = " "; // un espacio en blanco
   var arregloDeSubCadenasFiltro = nombreFiltro.split(separadorFiltro);
-  /*
-  console.log("arreglo de subcadenas");
-  console.log(arregloDeSubCadenas);*/
+
   var arregloFiltro = [];
   for (let i = 0; i< arregloDeSubCadenasFiltro.length; i++) {
     if(arregloDeSubCadenasFiltro[i]!==''){
        arregloFiltro.push(arregloDeSubCadenasFiltro[i])
     }
   }
-  /*
-  console.log("arreglo sin espacios en blanco");
-  console.log(arreglo);
-*/
+
   var nombrenuevoFiltro = arregloFiltro.join(" & ");
-  /* console.log("lista de numeros pasados");
-   console.log(this.state.filtroNumeros);
-   console.log("lista de CONCEPTOS PASADOSs");
-   console.log(concep); */
+ 
   //ANTERIOR LINK:
   //http://modulo-alumno-zuul.herokuapp.com/modulo-alumno-jdbc-client/recaudaciones/alumno/concepto/listar/filtrar
   console.log("link filtros")
@@ -1020,6 +1396,7 @@ Filtrar=(e)=>{
   return response.json()
   })
   .then((pagos) => {
+    console.log(pagos)
   if(pagos.length > 0){
   this.setState({
     pagocero: pagos
@@ -1040,13 +1417,15 @@ Filtrar=(e)=>{
   console.error(error)
   });
 
-
+  
+  setTimeout(() => {
+    this.setState({
+      costosP2: this.state.costosP
+    })
+  }, 500);
+  
 
 }
-
-
-
-
 
   SeleccionFechaDel(Fecha) {
 
@@ -1077,7 +1456,6 @@ Filtrar=(e)=>{
     }
 
     //console.log("Seleccion conceptos: " + checkbox_seleccionados);
-
     return checkbox_seleccionados;
 
   }
@@ -1150,7 +1528,6 @@ show_or_hide() {
     document.getElementById("ubicacion" + i).style.display = statusInfo;  
     document.getElementById("banco" + i).style.display = statusInfo;  
   }
-
 }
 
 seguimientoEgresados=(e)=>{
@@ -1182,7 +1559,16 @@ enviarFormulario=(e)=>{
   }
 
 }
+
+//NUEVOOOOOOOOO
+AsignarPresupuesto=(e)=>{
+  browserHistory.push(this.state.name+'/vista/presupuesto');
+  e.preventDefault();
+
+}
+
 reporte_credito(idx,nombrenuevo,auxPagos){
+  console.log(CONFIG+'beneficio/breporte_cr/' + nombrenuevo+'/'+auxPagos[0].idPrograma+"/"+idx)
      fetch(CONFIG+'beneficio/breporte_cr/' + nombrenuevo+'/'+auxPagos[0].idPrograma+"/"+idx)
      .then((response)=>{
          return response.json();
@@ -1409,15 +1795,8 @@ FiltrarFecha(Fechas) {
             pagocero: filtrofinal
           })
         }
-/*
-
-        console.log(arrayfiltrado);
-        console.log(this.state.pagocero);*/
-
       }
     }
-
-
 
   }
 }
@@ -1545,4 +1924,3 @@ Paginacion.propTypes = propTypes;
 Paginacion.defaultProps = defaultProps;
 
 export default App;
-

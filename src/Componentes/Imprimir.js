@@ -166,10 +166,6 @@ class Imprimir extends React.Component {
   console.log("listado de conceptos obtenidos");
   console.log(conceptos);
 
-
-
-
-
    // var columns = ["Concepto","Numero Recibo","Dependencia","Fecha","Moneda","Importe"];
     
     // Only pt supported (not mm or in)

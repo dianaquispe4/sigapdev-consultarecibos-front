@@ -10,11 +10,13 @@ import AR_ReciboResultadoAlumnos from './AR_ReciboResultadoAlumnos'
 import AR_EstadoAsignacion from './AR_EstadoAsginacion'
 import AR_ProgramaAsignacion from './AR_ProgramaAsignacion'
 import AR_PendienteAsignacion from './AR_PendienteAsignacion';
+import AR_Transferencia from './AR_Transferencia';												  
 
 const opciones = [
     { value: 'Búsqueda por nombre', label: 'Búsqueda por nombre' },
     { value: 'Búsqueda por recibo', label: 'Búsqueda por recibo' },
-    { value: 'Pendiente de asignación', label: 'Pendiente de asignación' }
+    { value: 'Pendiente de asignación', label: 'Pendiente de asignación' },
+	{ value: 'Transferencia', label: 'Transferencia' }												  
 ];
 
 class BuscarNuevo extends React.Component {
@@ -33,10 +35,12 @@ class BuscarNuevo extends React.Component {
             ObjAsignación: [],
 
             objPendienteAsignacion: [],
-
+			objObservacion: [],
             buscarRecAlum: false,
             buscarRec: false,
             asignarRec: false,
+            buscarTransferencia: false,
+            transf: false,									   
 
             mostrarResultadoAlumnos: false,
 
@@ -63,6 +67,7 @@ class BuscarNuevo extends React.Component {
                 codAlum: '',//m
                 idProg: '',//m
                 siglaPrograma: '',//m
+				observacion: '',				
             },
 
             estado: false,
@@ -110,9 +115,11 @@ class BuscarNuevo extends React.Component {
                 recB: false,
                 buscarRecAlum: false,
                 posgradoB: false,
+				transf: false,			  
                 buscarRec: false,
                 asignarRec: false,
                 buscarPendiente: false,
+				buscarTransferencia: false,						   
                 mostrarResultadoAlumnos: false,
             });
             this.props.flag(false);
@@ -121,11 +128,13 @@ class BuscarNuevo extends React.Component {
                 value: selectedOption,
                 nomB: false,
                 recB: true,
+				transf: false,			  
                 buscarRecAlum: false,
                 posgradoB: false,
                 buscarRec: false,
                 asignarRec: false,
                 buscarPendiente: false,
+				buscarTransferencia: false,						   
                 mostrarResultadoAlumnos: false,
             });
             this.props.flag(false);
@@ -134,11 +143,30 @@ class BuscarNuevo extends React.Component {
                 value: selectedOption,
                 nomB: false,
                 recB: false,
+				transf: false,			  
                 buscarRecAlum: false,
                 posgradoB: true,
                 buscarRec: false,
                 asignarRec: false,
                 buscarPendiente: false,
+                buscarTransferencia: false,
+                mostrarResultadoAlumnos: false,
+            });
+            this.props.flag(false);
+        }
+
+        else if (selectedOption.value == 'Transferencia') {
+            this.setState({
+                value: selectedOption,
+                nomB: false,
+                recB: false,
+                buscarRecAlum: false,
+                posgradoB: false,
+                transf: true,
+                buscarRec: false,
+                asignarRec: false,
+                buscarPendiente: false,
+                buscarTransferencia: false,		   
                 mostrarResultadoAlumnos: false,
             });
             this.props.flag(false);
@@ -371,6 +399,7 @@ class BuscarNuevo extends React.Component {
                 ObjAsignación: [],
                 posgradoB: true,
                 buscarPendiente: true,
+                buscarTransferencia: false,										   
                 buscarRecAlum: false,
                 buscarRec: false,
                 asignarRec: false,
@@ -382,6 +411,7 @@ class BuscarNuevo extends React.Component {
                 apePat: '',
                 apeMat: '',
                 nombre: '',
+                observacion: '',								
             })
 
             fetch(CONFIG + '/recaudaciones/listarPendientes/' + fechaInicio + '/' + fechaFin)/*PONER PARAMETROS LAS FECHAS Y LISTO*/
@@ -389,6 +419,7 @@ class BuscarNuevo extends React.Component {
                     return response.json();
                 })
                 .then((pendienteAsignacion) => {
+                    console.log(CONFIG + '/recaudaciones/listarPendientes/' + fechaInicio + '/' + fechaFin);					
                     console.log("---PendienteAsignacion---");
                     console.log(pendienteAsignacion);
 
@@ -402,6 +433,7 @@ class BuscarNuevo extends React.Component {
                             id_rec: '',
                             numero: '',
                             idAlum: '',
+                            observacion: '',											
                             moneda: '',
                             importe: '',
                             estado: '',
@@ -424,6 +456,7 @@ class BuscarNuevo extends React.Component {
                             listadoRec.id_rec = pendienteAsignacion[i].id_rec;
                             listadoRec.numero = pendienteAsignacion[i].numero;
                             listadoRec.idAlum = pendienteAsignacion[i].id_alum;
+                            listadoRec.observacion = pendienteAsignacion[i].observacion;																						
                             listadoRec.moneda = 'SOL';
                             listadoRec.importe = 'S/' + pendienteAsignacion[i].importe;
                             listadoRec.estado = pendiente_estado;//m
@@ -435,6 +468,7 @@ class BuscarNuevo extends React.Component {
                             listadoRec.apeNom = pendienteAsignacion[i].apeNom;
                             listadoRec.concepto = pendienteAsignacion[i].concepto;
                             listadoRec.fecha = pendienteAsignacion[i].fecha;
+                            listadoRec.observacion = pendienteAsignacion[i].observacion;																						
                             listadoRec.id_rec = pendienteAsignacion[i].id_rec;
                             listadoRec.numero = pendienteAsignacion[i].numero;
                             listadoRec.idAlum = pendienteAsignacion[i].id_alum;
@@ -449,6 +483,7 @@ class BuscarNuevo extends React.Component {
                             listadoRec.apeNom = pendienteAsignacion[i].apeNom;
                             listadoRec.concepto = pendienteAsignacion[i].concepto;
                             listadoRec.fecha = pendienteAsignacion[i].fecha;
+							listadoRec.observacion = pendienteAsignacion[i].observacion;																						
                             listadoRec.id_rec = pendienteAsignacion[i].id_rec;
                             listadoRec.numero = pendienteAsignacion[i].numero;
                             listadoRec.idAlum = pendienteAsignacion[i].id_alum;
@@ -490,6 +525,177 @@ class BuscarNuevo extends React.Component {
         e.preventDefault();
     }
 
+   onSubmitTransferencia = (e) => {  /* an */
+        var fechaInicio = this.fechaInicio.value;
+        var fechaFin = this.fechaFin.value;
+
+        if (!fechaInicio && !fechaFin) {
+            swal("Ingrese la fecha a buscar", " ", "info");
+        } else {
+            this.setState({
+                objRecaudaciones: [],
+
+                objAlumnos: [],
+                ObjAsignación: [],
+                posgradoB: false,
+                buscarPendiente: false,
+                buscarTransferencia: true,
+                buscarRecAlum: false,
+                buscarRec: false,
+                transf: true,
+                asignarRec: false,
+                estado: false,
+                alumno: null,
+                opcAlumno: [],
+                dni: '',
+                codigo: '',
+                apePat: '',
+                apeMat: '',
+                nombre: '',
+                observacion: '',
+            })
+
+            fetch(CONFIG + '/recaudaciones/listarObservaciones/' + fechaInicio + '/' + fechaFin)/*PONER PARAMETROS LAS FECHAS Y LISTO*/
+                .then((response) => {
+                    return response.json();
+                })
+                .then((Observacion) => {
+                    console.log("---Observacion---");
+                    console.log(Observacion);
+                    console.log(fechaFin);
+                    console.log(fechaInicio);
+
+
+                    var lista = [];
+                    for (let i = 0; i < Observacion.length; i++) {
+                        var listadoObs = {
+                            apeNom: '',
+                            concepto: '',
+                            fecha: '',
+                            observacion: '',
+                            id_rec: '',
+                            numero: '',
+                            idAlum: '',
+                            moneda: '',
+                            importe: '',
+                            estado: '',
+                            codAlumno: '',
+                            programa: ''
+                        }
+
+                        let observacion_estado;
+                        if (Observacion[i].observacion != null) {
+                            observacion_estado = "true";
+                        } else {
+                            observacion_estado = "false";
+                        }
+
+
+                        listadoObs.apeNom = Observacion[i].apeNom;
+                        listadoObs.concepto = Observacion[i].concepto;
+                        listadoObs.fecha = Observacion[i].fecha;
+                        listadoObs.id_rec = Observacion[i].id_rec;
+                        listadoObs.numero = Observacion[i].numero;
+                        listadoObs.observacion = Observacion[i].observacion;
+                        listadoObs.idAlum = Observacion[i].id_alum;
+                        listadoObs.moneda = 'SOL';
+                        listadoObs.importe = 'S/' + Observacion[i].importe;
+                        listadoObs.estado = observacion_estado;
+                        listadoObs.codAlumno = Observacion[i].codAlumno;
+                        listadoObs.programa = Observacion[i].programa;
+
+                      
+                          
+                        lista.push(listadoObs);
+
+                    }
+
+                    this.setState({
+                        objObservacion: lista,
+                    })
+                    console.log("---ObjObservacion---");
+                    console.log(this.state.objObservacion);
+                    if (this.state.objObservacion.length > 0) {
+                        this.setState({
+                            buscarTransferencia: true
+                        });
+                        swal("Consulta realizada exitosamente", " ", "success");
+                    } else {
+                        this.setState({
+                            buscarTransferencia: false
+                        });
+                        swal("No hay observaciones", " ", "info")
+                    }
+                })
+                .catch((error) => {
+                    this.setState({
+                        buscarTransferencia: false
+                    });
+                    console.log(error);
+                })
+        }
+
+        e.preventDefault();
+    }
+
+    getDetalleTransferencia = (objRec) => { /* an */
+        let objRecibo_estado;
+        if (objRec[0].codAlum != null) {
+            objRecibo_estado = "true";
+        } else {
+            objRecibo_estado = "false";
+        }
+        if (objRec[0].moneda == '108') {
+
+            this.setState({
+                detalleRecaudaciones: {
+                    apeNom: objRec[0].apeNom,
+                    concepto: objRec[0].concepto,
+                    recibo: objRec[0].numero,
+                    moneda: 'SOL',
+                    importe: 'S/ ' + objRec[0].importe,
+                    fecha: objRec[0].fecha,
+                    estado: objRecibo_estado,
+                    observacion: objRec[0].observacion,
+                    codAlumno: objRec[0].codAlum,
+                    programa: objRec[0].idProg,
+                    siglaPrograma: objRec[0].siglaProg,
+                }
+            });
+        } else if (objRec[0].moneda == '113') {
+            this.setState({
+                detalleRecaudaciones: {
+                    apeNom: objRec[0].apeNom,
+                    concepto: objRec[0].concepto,
+                    recibo: objRec[0].numero,
+                    moneda: 'DOL',
+                    importe: '$ ' + objRec[0].importe,
+                    fecha: objRec[0].fecha,
+                    estado: objRecibo_estado,
+                    codAlumno: objRec[0].codAlum,
+                    observacion: objRec[0].observacion,
+                    programa: objRec[0].idProg,
+                    siglaPrograma: objRec[0].siglaProg,
+                }
+            });
+        } else {
+            this.setState({
+                detalleRecaudaciones: {
+                    apeNom: objRec[0].apeNom,
+                    concepto: objRec[0].concepto,
+                    recibo: objRec[0].numero,
+                    moneda: ' ',
+                    importe: objRec[0].importe,
+                    fecha: objRec[0].fecha,
+                    observacion: objRec[0].observacion,
+                    estado: objRecibo_estado,
+                    codAlumno: objRec[0].codAlum,
+                    programa: objRec[0].idProg,
+                    siglaPrograma: objRec[0].siglaProg,
+                }
+            });
+        }
+    }
     getDetalleRecaudaciones = (objRec) => {
         let objRecibo_estado;
         if (objRec[0].codAlum != null) {
@@ -508,6 +714,7 @@ class BuscarNuevo extends React.Component {
                     importe: 'S/ ' + objRec[0].importe,
                     fecha: objRec[0].fecha,
                     estado: objRecibo_estado,
+					observacion: objRec[0].observacion,													   
                     codAlumno: objRec[0].codAlum,//m
                     programa: objRec[0].idProg,//m
                     siglaPrograma: objRec[0].siglaProg,//m
@@ -524,6 +731,7 @@ class BuscarNuevo extends React.Component {
                     fecha: objRec[0].fecha,
                     estado: objRecibo_estado,
                     codAlumno: objRec[0].codAlum,//m
+					observacion: objRec[0].observacion,								   
                     programa: objRec[0].idProg,//m
                     siglaPrograma: objRec[0].siglaProg,//m
                 }
@@ -537,6 +745,7 @@ class BuscarNuevo extends React.Component {
                     moneda: ' ',
                     importe: objRec[0].importe,
                     fecha: objRec[0].fecha,
+					observacion: objRec[0].observacion,								   
                     estado: objRecibo_estado,
                     codAlumno: objRec[0].codAlum,//m
                     programa: objRec[0].idProg,//m
@@ -587,6 +796,7 @@ class BuscarNuevo extends React.Component {
                                             <td className="td1">{this.state.detalleRecaudaciones.moneda}</td>
                                             <td className="td1">{this.state.detalleRecaudaciones.importe}</td>
                                             <td className="td1">{this.state.detalleRecaudaciones.fecha}</td>
+                                            <td className="td1">{this.state.detalleRecaudaciones.observacion}</td>																												  
 
                                             <td className="td1">
                                                 <AR_CodigoAsignacion codAlum={this.state.detalleRecaudaciones.codAlumno} />
@@ -672,6 +882,7 @@ class BuscarNuevo extends React.Component {
                                             <td className="td1">{this.state.detalleRecaudaciones.moneda}</td>
                                             <td className="td1">{this.state.detalleRecaudaciones.importe}</td>
                                             <td className="td1">{this.state.detalleRecaudaciones.fecha}</td>
+											<td className="td1">{this.state.detalleRecaudaciones.observacion}</td>																												  
 
                                             <td className="td1">
                                                 <AR_CodigoAsignacion codAlum={this.state.detalleRecaudaciones.codAlumno} />
@@ -751,6 +962,34 @@ class BuscarNuevo extends React.Component {
                         {this.state.buscarPendiente ? (
                             <div>
                                 <AR_PendienteAsignacion listPendienteAsignacion={this.state.objPendienteAsignacion} />
+                            </div>
+                        ) : (null)}
+                    </div>
+
+                ) : (null)}
+
+                {this.state.transf ? (
+                    <div>
+                        <form>
+                            <div className="SplitPane row">
+                                <div className="col-xs-3 margen2">
+                                    <input ref={(input) => this.fechaInicio = input} type="date" maxLength="100" placeholder="Fecha de Inicio" />
+                                </div>
+                                <div className="col-xs-3 margen2">
+                                    <input ref={(input) => this.fechaFin = input} type="date" maxLength="100" placeholder="Fecha de Fin" />
+                                </div>
+                                <div className="col-xs-2 margen2">
+                                    <button className="waves-effect waves-light btn-large center" type="submit" onClick={this.onSubmitTransferencia}>
+                                        Buscar
+                                        <i className="large material-icons left">search</i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        {this.state.buscarTransferencia ? (
+                            <div>
+                                <AR_Transferencia listObservacion={this.state.objObservacion} />
                             </div>
                         ) : (null)}
                     </div>
@@ -971,6 +1210,7 @@ class BuscarNuevo extends React.Component {
                     codAlumno: '',//m
                     programa: '',//m
                     siglaProg: '',//m
+                    observacion: '',									
                 }
             });
         } else if (state_moneda == '113') {
@@ -986,6 +1226,7 @@ class BuscarNuevo extends React.Component {
                     codAlumno: '',//m
                     programa: '',//m
                     siglaProg: '',//m
+                    observacion: '',									
                 }
             });
         } else {
@@ -1001,6 +1242,7 @@ class BuscarNuevo extends React.Component {
                     codAlumno: '',//m
                     programa: '',//m
                     siglaProg: '',//m
+                    observacion: '',									
                 }
             });
         }

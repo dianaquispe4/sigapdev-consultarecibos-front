@@ -77,7 +77,8 @@ class Login extends React.Component {
                   .then((tourJson)=> {
                     if(tourJson.length == 1){
                       swal("Alumno solo tiene un programa!" ,"", "success").then(
-                         browserHistory.push('/'+this.state.usuario.codAlumno))
+                         //browserHistory.push('/'+this.state.usuario.codAlumno))
+                         browserHistory.push('/'+ this.state.usuario.codAlumno +'/vista/importe'))
                     }else if(tourJson.length >1){                
                       swal("Alumno tiene mas de un programa!" ,"", "success").then(
                         browserHistory.push('/filtro/'+ this.state.usuario.apePaterno + "/" + this.state.usuario.codAlumno))

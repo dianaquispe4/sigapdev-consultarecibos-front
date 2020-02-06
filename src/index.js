@@ -16,6 +16,10 @@ import VistaIntermediaLoginAlumno from './Componentes/seleccion_intermedia_login
 import ComponenteEditable from './Componentes/ComponenteEditable';
 import Formulario from './Componentes/formulario';
 import VistaSeguimientoEgresado from './Componentes/VistaSeguimientoEgresado';
+import AsignarPresupuesto from './Componentes/AsignarPresupuesto';
+import ImportePagos from './Componentes/Importe-Pagos';
+import RegistroCostoPrograma from './Componentes/RegistroCostoPrograma';
+import RegistroPresupuesto from './Componentes/RegistroPresupuesto';
 
 class Index extends React.Component {
     render() {
@@ -37,8 +41,12 @@ class Index extends React.Component {
             <Route path="/vista/imprimir" component={ComponenteEditable}></Route>
             <Route path="/formulario/:codigo" component={Formulario}></Route>          
             <Route path="/:name/vista/egresado" component={VistaSeguimientoEgresado}></Route>
+			<Route path="/:name/vista/importe" component={ImportePagos}></Route>
             <Route path="/vista/loginFormAdmi" component={LoginForm}></Route>
             <Route path="/vista/loginApp" component={LoginApp}></Route>
+		    <Route path="/vista/presupuesto" component={AsignarPresupuesto}></Route>
+			<Route path="/vista/presupuestoRegistro" component={RegistroPresupuesto}></Route>
+	
 
           </Router>
           )
@@ -48,5 +56,6 @@ class Index extends React.Component {
 
 ReactDOM.render(
     <Index/>, document.getElementById('root'));
+//ReactDOM.render(<RegistroCostoPrograma />, document.getElementById('root'));
 
 registerServiceWorker();

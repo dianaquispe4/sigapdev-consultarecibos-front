@@ -19,40 +19,29 @@ class LoginForm extends React.Component {
   }
 
 
-  onSubmit=(e)=>{
-    
-    // console.log(this.state.nombres);
-   //https://modulo-alumno-zuul.herokuapp.com/modulo-alumno-client/alumno/leer/
+  onSubmit=(e)=>{    
+    // console.log(this.state.nombres);   
     var nombreValidado = this.ValidarNombre(this.state.nombres);
     var nombres = this.state.nombres.toUpperCase();
     if(nombreValidado){
     var separador = " "; // un espacio en blanco
-    var arregloDeSubCadenas = nombres.split(separador);
-    // console.log("arreglo de subcadenas");
-    // console.log(arregloDeSubCadenas);
+    var arregloDeSubCadenas = nombres.split(separador);    
     var arreglo = [];
     for (let i = 0; i< arregloDeSubCadenas.length; i++) {
       if(arregloDeSubCadenas[i]!==''){
          arreglo.push(arregloDeSubCadenas[i])
       }
-    }
-    // console.log("arreglo sin espacios en blanco");
-    // console.log(arreglo);
+    }    
     var nombrenuevo = arreglo.join(" & ");
-    // console.log("nombre nuevo");
-    // console.log(nombrenuevo);
-    //ANTERIOR LINK:
-    //https://modulo-alumno-zuul.herokuapp.com/modulo-alumno-jdbc-client/recaudaciones/alumno/concepto/listar/
         fetch(CONFIG+'recaudaciones/alumno/concepto/listar_cod/' + nombrenuevo)
             .then((response) => {
             return response.json()
             })
             .then((pagos) => {
              if(pagos.length>0){
-
                 
               swal("Consulta realizada exitosamente!" ,"", "success").then(
-                 browserHistory.push('/'+this.state.nombres.toUpperCase()))
+                 browserHistory.push('/'+this.state.nombres.toUpperCase()))                 
               }
               else{
                 swal("No se encontraron pagos con el nombre ingresado", "", "info");
@@ -90,6 +79,10 @@ class LoginForm extends React.Component {
     // console.log("Vista nueva");
     e.preventDefault();
     
+  }
+  vistaPresupuesto = (e) =>{
+    browserHistory.push('/vista/presupuestoRegistro');
+    e.preventDefault();
   }
   VistaNueva2=(e)=>{
     
@@ -135,13 +128,15 @@ class LoginForm extends React.Component {
     return (
       <div className="">
       <h3>Módulo consulta de pagos
+
          <ul id="nav-mobile" className="right  hide-on-med-and-down">
-              <li ><a className="seleccionar" href="https://siga-fisi.herokuapp.com/dashboard" >Vista Principal<i className="material-icons right">launch</i></a></li>
+              {/*<li ><a className="seleccionar" href="https://siga-fisi.herokuapp.com/dashboard" >Vista Principal<i className="material-icons right">launch</i></a></li>*/}
           </ul>
       </h3>
       <nav>
     <div className="nav-wrapper azul">
       <ul id="nav-mobile" className="right hide-on-med-and-down">
+		<li><a onClick={this.vistaPresupuesto} >  <i className="small material-icons right">attach_money</i>Registro Costo Programas</a></li>															 
         <li><a onClick={this.VistaNueva2}><i className="small material-icons right">check_box</i>Asignar Programa</a></li>
         <li><a onClick={this.AsignacionPresupuesto}><i className="small material-icons right">check_box</i>Presupuesto Masivo</a></li>
 		<li ><a className="seleccionar" onClick={this.RegresarAdmin} >Salir<i className="material-icons right">reply</i></a></li>																													  

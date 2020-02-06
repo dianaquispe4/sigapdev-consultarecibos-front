@@ -36,17 +36,19 @@ class LoginApp extends Component {
     return (
       <div className="root-container">
         <h3>Módulo consulta de pagos
+        {/*
           <ul id="nav-mobile" className="right  hide-on-med-and-down">
             <li ><a className="seleccionar" href="https://siga-fisi.herokuapp.com/dashboard" >Vista Principal<i className="material-icons right">launch</i></a></li>
-          </ul>
+          </ul>*/}
         </h3>
-        <nav>
+        {/*<nav>
+
           <div className="nav-wrapper azul">
             <ul id="nav-mobile" className="right hide-on-med-and-down">
               <li><a onClick={this.VistaNueva2} >  <i className="small material-icons right">check_box</i>Asignar Programa</a></li>
             </ul>
           </div>
-        </nav>
+        </nav>*/}
         <br/>
         <br/>
         <FadeTransition isOpen={this.state.isLoginOpen} duration={500}>

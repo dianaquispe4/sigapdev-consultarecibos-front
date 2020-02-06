@@ -13,6 +13,7 @@ import Imprimir2 from './imprimir2';
 import {browserHistory} from 'react-router-3';
 import swal from 'sweetalert';
 import CONFIG from '../Configuracion/Config'
+import CONFIG1 from '../Configuracion/Conf'
 import FormularioIntermio from './formulario-intermedio';
 import ComponenteEditable from './ComponenteEditable'
 import ImporteDolar from './ImporteDolar';
@@ -1214,7 +1215,9 @@ this.setState({
                 <a href="javascript:void(0)" className="closebtn" onClick={this.closeNav}>×</a>
                 <a href="#" onClick={this.seguimientoEgresados}>Seguimiento de Egresados</a>
                 <a href="#" onClick={this.enviarFormulario}>Revisar Beneficio</a>
-                <a href="#" onClick={this.Regresar}>Regresar</a>
+				<a href="#" onClick={this.importePago}>Importe de Pago</a>
+                {/*<a href="#" onClick={this.Regresar}>Regresar</a>*/}
+                <a href="#" onClick={browserHistory.goBack}>Regresar</a>
               </div>
               {/*Fin*/}
               <table className="table-small">
@@ -1536,7 +1539,12 @@ seguimientoEgresados=(e)=>{
   e.preventDefault();
 
 }
+importePago=(e)=>{
+  
+  browserHistory.push(this.state.name+'/vista/importe');
+  e.preventDefault();
 
+}
 enviarFormulario=(e)=>{
   try{
     this.closeNav();

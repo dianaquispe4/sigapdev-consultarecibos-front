@@ -64,6 +64,48 @@ width: 130px !important; /*Aquí va el ancho de la Celda*/
   border-radius: 5px;
   margin-top: 10px;
 }
+
+.tableImportes{
+  
+  border-collapse: collapse;/*juntamos los border por td y la tabla en si en uno solo*/
+  width: 100%;
+  border: 3px solid WHITE;
+  border-radius: 5px;
+  ;
+}
+.tableImporte{
+  
+  border-collapse: collapse;/*juntamos los border por td y la tabla en si en uno solo*/
+  width: 100%;
+ 
+  border: 3px solid WHITE;
+  border-radius: 5px;
+  
+  margin-bottom: 30px;
+  margin-top: 0px
+}
+.tbodyImporte{
+  border-collapse: collapse;/*juntamos los border por td y la tabla en si en uno solo*/
+  width: 100%;
+  height: 200px;  /*Altura definida para que aplique el scroll*/
+  display: inherit;
+  
+  overflow-x: hidden; /*oculta el scroll horicontal*/
+  overflow-y: auto; /*muestra el scroll vertical*/
+ 
+}
+
+.tableScroll{
+  border-collapse: collapse;/*juntamos los border por td y la tabla en si en uno solo*/
+  width: 100%;
+  height: 350px;  /*Altura definida para que aplique el scroll*/
+  display: inherit;
+  
+  overflow-x: hidden; /*oculta el scroll horicontal*/
+  overflow-y: auto; /*muestra el scroll vertical*/
+ 
+}
+
 .centrar{
   text-align: center;
   align-content: center;
@@ -122,8 +164,46 @@ border-radius: 8px;
  
   /*border-bottom: 1px solid #ddd;para borde solo horizontal*/
 }
-
-
+.tdTable{
+  /*height: 10px;*/
+  text-align: center;/*Alineamos el texto al centro ---th por defecto esta alineado al centro*/
+   vertical-align: top; /*Alineamos el texto verticalmente hacia arriba*/
+  border: 0px ;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  /*border-bottom: 1px solid #ddd;para borde solo horizontal*/
+}
+.trTable{
+  height: 10px;
+  text-align: center;/*Alineamos el texto al centro ---th por defecto esta alineado al centro*/
+   vertical-align: top; /*Alineamos el texto verticalmente hacia arriba*/
+  padding-left: 0px;
+  padding-right: 0px;
+  border: 0px ;
+ 
+  /*border-bottom: 1px solid #ddd;para borde solo horizontal*/
+}
+.trData{
+  /*height: 10px;*/
+ /* text-align: center;/*Alineamos el texto al centro ---th por defecto esta alineado al centro*/
+  overflow: auto;
+  height: 300px;
+ 
+  /*border-bottom: 1px solid #ddd;para borde solo horizontal*/
+}
+.thLabel{
+  height: 10px;
+  text-align: center;/*Alineamos el texto al centro ---th por defecto e
+  
+  alineado al centro*/
+   /* vertical-align: bottom; Alineamos el texto verticalmente hacia abajo*/
+  padding: 3px;
+  background-color:teal;
+  color: white;
+  /*border: 3px solid WHITE; /*Borde del recuadro*/
+  border-radius: 8px;
+  /*border-bottom: 1px solid #ddd;para borde solo horizontal*/
+}
 .th:hover {background-color: black ;color:  lightblue;}/*selector de <tr> para resaltar filas,encabezados de la tabla en el mouse:*/
 .tr:nth-child(even) {background-color: white}
 
@@ -143,7 +223,51 @@ label {
   font-family: 'Times New Roman', Times, serif;
   width: 90px;
 }
+.inputCosto{
+  
+  height: 10px;
+  text-align: center;/*Alineamos el texto al centro ---th por defecto e
+  
+  alineado al centro*/
+   /* vertical-align: bottom; Alineamos el texto verticalmente hacia abajo*/
+  padding: 3px;
+  background-color:teal;
+  color: black;
+  border: 3px solid black;
+  border-radius: 8px;
+  /*border-bottom: 1px solid #ddd;para borde solo horizontal*/
+  }
 
+  
+.inputImporte{
+  
+  height: 10px;
+  text-align: center;/*Alineamos el texto al centro ---th por defecto e
+  
+  alineado al centro*/
+   /* vertical-align: bottom; Alineamos el texto verticalmente hacia abajo*/
+  padding: 3px;
+  background-color:teal;
+  color: white;
+  border: 3px solid WHITE;
+  border-radius: 8px;
+  /*border-bottom: 1px solid #ddd;para borde solo horizontal*/
+  }
+
+  .inputDeuda{
+  
+    height: 10px;
+    text-align: center;/*Alineamos el texto al centro ---th por defecto e
+    
+    alineado al centro*/
+     /* vertical-align: bottom; Alineamos el texto verticalmente hacia abajo*/
+    padding: 3px;
+    background-color:teal;
+    color: white;
+    border: 3px solid WHITE;
+    border-radius: 8px;
+    /*border-bottom: 1px solid #ddd;para borde solo horizontal*/
+    }
 
 .imprimir{
  float: right;
@@ -216,7 +340,9 @@ label {
    border-radius: 8px;
 
  }
- 
+.Padding_bottom{
+padding-bottom: 10px;
+}
 
  .sombra2{
    padding:5px;
@@ -257,6 +383,10 @@ label {
   padding-left: 10px;
   padding-right: 40px;
 }
+.margenImprimirImporte{
+  margin-top: 20px;
+  margin-bottom: 20px;
+ } 
 .estilo{
  height: 30px !important;
 }

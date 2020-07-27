@@ -234,7 +234,7 @@ class TablaOtrasObligaciones extends React.Component {
               </Modal>
 
 
-<table>
+<table className="tableImporte">
 
         <tr >
             <th className="thLabel">OTRAS OBLIGACIONES PENDIENTES DE PAGO</th>
@@ -253,7 +253,9 @@ class TablaOtrasObligaciones extends React.Component {
             <th className="th">MONEDA</th>
             <th className="th">IMPORTE</th>
             <th className="th">ESTADO</th>
-            <th className="thVacio" ><button onClick={this.mostrarAgregarObligacion} className="waves-effect waves-light btn-small"><i className="large material-icons center">add</i></button>
+            <th className="thVacio" >
+              {localStorage.getItem('tipo')=='alumno' ? '' : <button onClick={this.mostrarAgregarObligacion} className="waves-effect waves-light btn-small"><i className="large material-icons center">add</i></button>}
+
                 </th>
                   
         </tr>

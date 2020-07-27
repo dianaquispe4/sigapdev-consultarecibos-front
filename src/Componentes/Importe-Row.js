@@ -32,14 +32,7 @@ class ImporteRow extends React.Component {
     }
   }
 
-  componentDidMount() {
-    // if(this.props.pago.estado=="M"){
-    //   this.setState({
-    //     desabilitar:false
-    //   })
-
-
-    // }
+  componentDidMount() {   
 
     this.setState({
       selectedOption: { value: this.props.pago.concepto, label: this.props.pago.concepto },
@@ -873,22 +866,17 @@ class ImporteRow extends React.Component {
             <label className=" center-xs color_white">{this.props.pago.fecha.replace(/^(\d{4})-(\d{2})-(\d{2})$/g, '$3-$2-$1')}</label>
           </form>
         </td>
-        {/*}
-        <td className="td" id={"coins" + (this.props.numero + 1)} style={{display: 'none'}}>
-          
-          <Select
-
-            value={this.state.selectedOption2}
-            onChange={this.handleChange2}
-            options={this.props.monedas}
-            disabled={this.state.desabilitar2}
-          />
+        
+        <td className="td" id={"coins" + (this.props.numero + 1)} >
+        <form action="#">
+        <label className="center-xs color_white">{this.props.pago.moneda2}</label>
+          </form>
         </td>
-        */}
+        
         <td className="td" id={"imports" + (this.props.numero + 1)}>
           
               <form action="#">
-                <label className="center-xs color_white">S/ {this.props.pago.importe}</label>
+                <label className="center-xs color_white">{this.state.moneda} {this.props.pago.importe}</label>
               </form>
             
         </td>

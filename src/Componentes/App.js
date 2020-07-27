@@ -68,6 +68,17 @@ class App extends React.Component {
       monedasvl:[],
       ubicaciones:[],
       ubicacionesv1:[],
+
+      tipo_recaudacion:[],
+      
+      /**
+       * Aca entran las repitencias
+       */
+      repitenciav1:[
+        {value:"N",label:"NO"},
+        {value:"S",label:"SI"},
+      ],
+
       tipos:[],
       tiposv1:[],
       defuncion: 1,
@@ -124,6 +135,7 @@ class App extends React.Component {
     this.show_or_hide = this.show_or_hide.bind(this);
   }
 componentDidUpdate(){
+  console.log("Esto es segundo");
     if(this.state.estado!=0){
       var checks=document.getElementsByClassName("checkbox1");
       for(let i=0;i<checks.length;i++){
@@ -241,11 +253,23 @@ componentDidUpdate(){
 
 
   componentWillMount() {
+    console.log("esto es primero");
 
+
+    fetch(CONFIG+"tiposRecaudacion/listar")
+    .then(resp => {
+      return resp.json();
+    })
+    .then(data => {
+      console.log("los tipos de racaudacion",data)
+      this.setState({
+        tipo_recaudacion: data.tipoRecaudaciones
+      })
+    })
 
       setTimeout(() => {
         
-
+    console.log("Este es el id del programa",this.state.idPrograma)
     fetch(CONFIG+'alumno/alumnoprograma/programa/'+this.state.idPrograma)
    .then((response)=>{
      return response.json();
@@ -288,9 +312,15 @@ componentDidUpdate(){
   }, 2000);
 
 
+  
+    console.log("El pago cero es: ",this.pagocero)
+
     this.pageOfItems = this.pagocero;
+    console.log("El page of items es: ",this.pageOfItems)
     var checkbox_selec=[];
+
     var nombres = this.state.name;
+    console.log("los nombres son -> ",nombres);
     var checks=document.getElementsByClassName("checkbox1");
     var checks_normales=Array.from(checks);
     checks_normales.map((checkbox)=>{
@@ -304,9 +334,8 @@ componentDidUpdate(){
    fetch(CONFIG+'/concepto/conceptos')
    .then((response)=>{
        return response.json()
-   }).then((listas)=>{
-       console.log("holaaaaaaaa")
-       console.log(listas)
+   })
+   .then((listas)=>{
 
        this.setState({
          datos:listas
@@ -453,6 +482,7 @@ this.setState({
 
     var separador = " "; // un espacio en blanco
     var arregloDeSubCadenas = nombres.split(separador);
+    console.log("el arreglo de subcadenas es  ->",arregloDeSubCadenas);
     var arreglo = [];
     for (let i = 0; i< arregloDeSubCadenas.length; i++) {
       if(arregloDeSubCadenas[i]!==''){
@@ -460,8 +490,13 @@ this.setState({
       }
     }
 
-    var nombrenuevo = arreglo.join(" & ");
+    console.log("el arreglo luego de pasar por el for es ->",arreglo);
+
+    var nombrenuevo = arreglo.join(" & ");  //esto es 18207001
+    
     var nombreAlumno = arreglo.join(" ");
+    console.log("El nombre del alumno es ->",nombreAlumno);//esto es 18207001
+    //por la weba hizo el for este weon : > desde la linea 467 hasta la 481 esta por las puras.
 //ANTERIOR LINK
 //https://modulo-alumno-zuul.herokuapp.com/modulo-alumno-jdbc-client/recaudaciones/alumno/concepto/listar/
 
@@ -470,8 +505,9 @@ this.setState({
     var nombresTrans = nombres;
     var pruebita = parseInt(nombresTrans);
 
-
+    console.log("pruebita es de tipo -> ",typeof(pruebita));
     if(isNaN(pruebita)){
+      console.log("pruebita no es un numero");
       this.clase=Alumno;
     fetch(CONFIG+'recaudaciones/alumno/concepto/listar/' + nombrenuevo)
       .then((response) => {
@@ -500,6 +536,7 @@ this.setState({
       // console.log(this.state.pagocero);
 
       }
+      //los pagos son los pagos cero del codigo del alumno
     )
       .catch(error => {
         // si hay algún error lo mostramos en consola
@@ -524,196 +561,199 @@ this.setState({
 
     }
     else{
-      this.clase=AlumnoCodigo
+            this.clase=AlumnoCodigo
 
-      fetch(CONFIG+'/beneficio/listar/' + nombrenuevo)
-        .then((response)=>{
-            return response.json()
-        }).then((datos)=>{
+            fetch(CONFIG+'/beneficio/listar/' + nombrenuevo)
+              .then((response)=>{
+                  return response.json()
+              }).then((datos)=>{
 
-          console.log("datos");
-          console.log(datos);
-          this.setState({datosformulario: datos})
+                console.log("datos del beneficio que posee el alumno");
+                console.log(datos);
+                this.setState({datosformulario: datos})
 
-        })
-        .catch(error=>{
-            console.error(error)
-        });
-
-      fetch(CONFIG+'recaudaciones/alumno/concepto/listar_cod/' + nombrenuevo)
-      .then((response) => {
-        return response.json()
-      })
-      .then((pagos) => {
-
-         console.log("pagos de la consulta de acuerdo el nombre ingresado");
-
-         console.log(pagos);
-         console.log(pagos[0].idPrograma)
-         this.setState({
-           idPrograma : pagos[0].idPrograma
-         })
-
-         console.log("UN IDREC");
-        // console.log(pagos[1].idRec);
-        var auxPagos = pagos;
-
-      var alumnoDetalle = {
-      apeNom: nombreAlumno
-      }
-        this.setState({
-          pagocero: pagos,
-          pagos: pagos,
-          alumno: alumnoDetalle,
-        },
-
-        );
-      var total=this.state.pagocero;
-
-     this.state.pagocero.map((pago)=>{
-       pago.check=false
-     })
-      // console.log(this.state.pagocero); colocar=()=>{
-
-      fetch(CONFIG+'beneficio/comprobacion/' + nombrenuevo)//CONFIG+'beneficio/breporte/' + nombrenuevo+'/'+auxPagos[0].idPrograma
-      .then((response)=>{
-          return response.json()
-      }).then((comprobacion)=>{//costos
-          console.log(comprobacion);
-          if(this.state.suma){
-            if(this.state.costosP.creditos){
-              this.setState({
-                idProgramaOriginal : pagos[0].idPrograma
               })
-            }
-           else {
-            this.setState({
-              idProgramaOriginal : 0
+              .catch(error=>{
+                  console.error(error)
+              });
+
+              // El nombre nuevo es el codigo del alumno por favor escribir los nombres de las variables para que tengan sentido
+              // console.log("el codigo del alumno es ->",nombrenuevo)
+            fetch(CONFIG+'recaudaciones/alumno/concepto/listar_cod/' + nombrenuevo)
+            .then((response) => {
+              return response.json()
             })
-           }
-           this.setState({
-             suma: false
-           })
-          }
-          if(comprobacion ==  1 ){
-              //console.log("toffe");
-              this.reporte_credito(comprobacion,nombrenuevo,auxPagos);
-              setTimeout(() => {
-                this.setState({
-                  costosP2: this.state.costosP
-                })
-                if(this.state.costosP.creditos){
-                  this.setState({
-                    idProgramaMostrar : pagos[0].idPrograma
-                  })
-                }
-               else {
-                this.setState({
-                  idProgramaMostrar : 0
-                })
-               }
-              }, 500);
-          }
-          else if(comprobacion == 2) {
-              //console.log("oso");
-              this.reporte_ciclo(nombrenuevo,auxPagos,2);
-              setTimeout(() => {
-                this.setState({
-                  costosP2: this.state.costosP
-                })
-                if(this.state.costosP.creditos){
-                  this.setState({
-                    idProgramaMostrar : pagos[0].idPrograma
-                  })
-                }
-               else {
-                this.setState({
-                  idProgramaMostrar : 0
-                })
-               }
-              }, 500);
-          }
-          else if(comprobacion == 3){
-               if(comprobacion.tipo == "por ciclo"){
-                   this.reporte_ciclo(nombrenuevo,auxPagos,0);
-                   setTimeout(() => {
-                    this.setState({
-                      costosP2: this.state.costosP
-                    })
-                    if(this.state.costosP.creditos){
-                      this.setState({
-                        idProgramaMostrar : pagos[0].idPrograma
-                      })
-                    }
-                   else {
-                    this.setState({
-                      idProgramaMostrar : 0
-                    })
-                   }
-                  }, 500);
-               }
-               else{
-                   this.reporte_credito(comprobacion,nombrenuevo,auxPagos);
-                   setTimeout(() => {
-                    this.setState({
-                      costosP2: this.state.costosP
-                    })
-                    if(this.state.costosP.creditos){
-                      this.setState({
-                        idProgramaMostrar : pagos[0].idPrograma
-                      })
-                    }
-                   else {
-                    this.setState({
-                      idProgramaMostrar : 0
-                    })
-                   }
-                  }, 500);
-               }
-          }
-      })
-      .catch(error=>{
-          console.error(error)
-      });
+            .then((pagos) => {
 
-      }
-    )
-      .catch(error => {
-        // si hay algún error lo mostramos en consola
-        console.error(error)
-      });
-    //LINK ANTERIOR::
-    //'https://modulo-alumno-zuul.herokuapp.com/modulo-alumno-jdbc-client/concepto/leer/restringido/'
-    console.log("link conceptos")
-    console.log(CONFIG+'concepto/leer/restringido/' + nombrenuevo)
+                      console.log("pagos de la consulta de acuerdo al codigo  ingresado son ->",pagos);
+                      console.log(pagos[0].idPrograma)
+                      this.setState({
+                        idPrograma : pagos[0].idPrograma
+                      })
 
-    fetch(CONFIG+'concepto/leer/restringido_cod/' + nombrenuevo)
-      .then((response) => {
-        return response.json()
-      })
-      .then((conceptos) => {
-        this.setState({
-          conceptos: conceptos
-        },
-        );
-      })
-      .catch(error => {
-        console.error(error)
-      });
+                      console.log("UN IDREC");
+                      // console.log(pagos[1].idRec);
+                      var auxPagos = pagos
+
+                    var alumnoDetalle = {
+                    apeNom: nombreAlumno
+                    }
+                    /***************************************************************************** */
+                      this.setState({
+                        pagocero: pagos,
+                        pagos: pagos,
+                        alumno: alumnoDetalle,
+                      });
+                      /***************************************************************************** */
+                    var total=this.state.pagocero;
+
+                  this.state.pagocero.map((pago)=>{
+                    pago.check=false
+                  })
+                    // console.log(this.state.pagocero); colocar=()=>{
+
+                    fetch(CONFIG+'beneficio/comprobacion/' + nombrenuevo)//CONFIG+'beneficio/breporte/' + nombrenuevo+'/'+auxPagos[0].idPrograma
+                    .then((response)=>{
+                        return response.json()
+                    }).then((comprobacion)=>{//costos
+                        console.log(comprobacion);
+                        if(this.state.suma){
+                          if(this.state.costosP.creditos){
+                            this.setState({
+                              idProgramaOriginal : pagos[0].idPrograma
+                            })
+                          }
+                        else {
+                          this.setState({
+                            idProgramaOriginal : 0
+                          })
+                        }
+                        this.setState({
+                          suma: false
+                        })
+                        }
+                        if(comprobacion ==  1 ){
+                            //console.log("toffe");
+                            this.reporte_credito(comprobacion,nombrenuevo,auxPagos);
+                            setTimeout(() => {
+                              this.setState({
+                                costosP2: this.state.costosP
+                              })
+                              if(this.state.costosP.creditos){
+                                this.setState({
+                                  idProgramaMostrar : pagos[0].idPrograma
+                                })
+                              }
+                            else {
+                              this.setState({
+                                idProgramaMostrar : 0
+                              })
+                            }
+                            }, 500);
+                        }
+                        else if(comprobacion == 2) {
+                            console.log("oso");
+                            console.log(auxPagos);
+                            this.reporte_ciclo(nombrenuevo,auxPagos,2);
+                            setTimeout(() => {
+                              this.setState({
+                                costosP2: this.state.costosP
+                              })
+                              if(this.state.costosP.creditos){
+                                this.setState({
+                                  idProgramaMostrar : pagos[0].idPrograma
+                                })
+                              }
+                            else {
+                              this.setState({
+                                idProgramaMostrar : 0
+                              })
+                            }
+                            }, 500);
+                        }
+                        else if(comprobacion == 3){
+                            if(comprobacion.tipo == "por ciclo"){
+                                this.reporte_ciclo(nombrenuevo,auxPagos,0);
+                                setTimeout(() => {
+                                  this.setState({
+                                    costosP2: this.state.costosP
+                                  })
+                                  if(this.state.costosP.creditos){
+                                    this.setState({
+                                      idProgramaMostrar : pagos[0].idPrograma
+                                    })
+                                  }
+                                else {
+                                  this.setState({
+                                    idProgramaMostrar : 0
+                                  })
+                                }
+                                }, 500);
+                            }
+                            else{
+                                this.reporte_credito(comprobacion,nombrenuevo,auxPagos);
+                                setTimeout(() => {
+                                  this.setState({
+                                    costosP2: this.state.costosP
+                                  })
+                                  if(this.state.costosP.creditos){
+                                    this.setState({
+                                      idProgramaMostrar : pagos[0].idPrograma
+                                    })
+                                  }
+                                else {
+                                  this.setState({
+                                    idProgramaMostrar : 0
+                                  })
+                                }
+                                }, 500);
+                            }
+                        }
+                    })
+                    .catch(error=>{
+                        console.error(error)
+                    });
+
+            })
+            .catch(error => {
+              // si hay algún error lo mostramos en consola
+              console.error(error)
+            });
+          //LINK ANTERIOR::
+          //'https://modulo-alumno-zuul.herokuapp.com/modulo-alumno-jdbc-client/concepto/leer/restringido/'
+              console.log("link conceptos")
+              console.log(CONFIG+'concepto/leer/restringido/' + nombrenuevo)
+
+            fetch(CONFIG+'concepto/leer/restringido_cod/' + nombrenuevo)
+              .then((response) => {
+                return response.json()
+              })
+              .then((conceptos) => {
+                this.setState({
+                  conceptos: conceptos
+                },
+                );
+              })
+              .catch(error => {
+                console.error(error)
+              });
     }
-
+/****************************************************************************** */
         /**set array pagos */ 
         fetch(CONFIG+'recaudaciones/alumno/concepto/listar_cod/' + nombrenuevo)
         .then((response) => {
         return response.json();
         })
-        .then((pagos)  =>{
-          console.log("anyiiiiiiiiiiiiiiiiiiii"+this.state.pagos[0].estado_civil)
+        .then( pagos  =>{
+          
+          
+          console.log(" estado civil ",pagos[0].estado_civil)
           this.setState({
-          estadoAlumno:this.state.pagos[0].estado_civil,
+          estadoAlumno:pagos[0].estado_civil,
           })
         });
-          }
+/****************************************************************************** */
+}
 
 
   Regresar=(e)=>{
@@ -1217,12 +1257,15 @@ this.setState({
                 <a href="#" onClick={this.enviarFormulario}>Revisar Beneficio</a>
 				<a href="#" onClick={this.importePago}>Importe de Pago</a>
                 {/*<a href="#" onClick={this.Regresar}>Regresar</a>*/}
-                <a href="#" onClick={browserHistory.goBack}>Regresar</a>
+
+                {/* aqui esta el boton de regresar eeeeeeeeeeeeeee*/}
+                <a href="#" onClick={this.regresarPaginaPrincipal}>Regresar ee</a>
               </div>
               {/*Fin*/}
               <table className="table-small">
                 <TableHeader   />
-                <PagoList funcion={this.Funcion} listado={this.state.pageOfItems}  conceptos={this.state.concepto} datos={this.state.datos} datosMonedas={this.state.monedas}  monedas={this.state.monedasvl} ubicaciones={this.state.ubicacionesv1} cuentas={this.state.cuentasv1} configuraciones={this.state.configuraciones}/>
+               
+                <PagoList funcion={this.Funcion} listado={this.state.pageOfItems}  conceptos={this.state.concepto} datos={this.state.datos} datosMonedas={this.state.monedas}  monedas={this.state.monedasvl} ubicaciones={this.state.ubicacionesv1} repitencia={this.state.repitenciav1} cuentas={this.state.cuentasv1} configuraciones={this.state.configuraciones} tipo_recaudacion={this.state.tipo_recaudacion}/>
               </table>
               <div className="margen_top"> <Paginacion items={this.state.pagocero} onChangePage={this.onChangePage}/></div>
               <div className="row">
@@ -1279,7 +1322,7 @@ this.setState({
                     <h3>
                     Lista de Beneficios
                     <ul id="nav-mobile" className="row right hide-on-med-and-down">
-                    <li ><a className="seleccionar col" onClick={this.enviarFormulario} >Regresar<i className="material-icons right">reply</i></a></li>
+                    <li ><a className="seleccionar col" onClick={this.enviarFormulario} >Regresar ee<i className="material-icons right">reply</i></a></li>
 
                     </ul>
                     </h3>
@@ -1363,12 +1406,10 @@ Filtrar=(e)=>{
     }
   }
 
-  var nombrenuevoFiltro = arregloFiltro.join(" & ");
- 
-  //ANTERIOR LINK:
-  //http://modulo-alumno-zuul.herokuapp.com/modulo-alumno-jdbc-client/recaudaciones/alumno/concepto/listar/filtrar
+  var nombrenuevoFiltro = arregloFiltro.join(" & "); 
+  
   console.log("link filtros")
-  console.log(CONFIG+'recaudaciones/alumno/concepto/listar/filtrar')
+  console.log(CONFIG+'recaudaciones/alumno/concepto/listar/filtrarAll')
   var json={
     "nom_ape": nombrenuevoFiltro,
     "fechaInicial": filtrodel,
@@ -1378,7 +1419,7 @@ Filtrar=(e)=>{
   }
   console.log("json enviado");
   console.log(json);
-  fetch(CONFIG+'recaudaciones/alumno/concepto/listar/filtrar', //CONFIG+'recaudaciones/alumno/concepto/listar/filtrar'
+  fetch(CONFIG+'recaudaciones/alumno/concepto/listar/filtrarAll',
   {
     headers: {
       'Content-Type': 'application/json'
@@ -1526,10 +1567,17 @@ show_or_hide() {
 
   document.getElementById("ubicacion_header").style.display = statusInfo;
   document.getElementById("banco_header").style.display = statusInfo;
-
+  // document.getElementById("repitencia_header").style.display = statusInfo;
+/************ */
+  document.getElementById("tipo_recaudacion_header").style.display = statusInfo;
+/************ */
   for(var i=1; i<=len; i++){
     document.getElementById("ubicacion" + i).style.display = statusInfo;  
-    document.getElementById("banco" + i).style.display = statusInfo;  
+    document.getElementById("banco" + i).style.display = statusInfo; 
+    // document.getElementById("repitencia" + i).style.display = statusInfo; 
+    /************ */
+    document.getElementById("tipo_recaudacion"+i).style.display = statusInfo;
+    /************ */
   }
 }
 
@@ -1544,6 +1592,10 @@ importePago=(e)=>{
   browserHistory.push(this.state.name+'/vista/importe');
   e.preventDefault();
 
+}
+regresarPaginaPrincipal=(e)=>{
+  browserHistory.push("/");
+  e.preventDefault();
 }
 enviarFormulario=(e)=>{
   try{
@@ -1581,6 +1633,7 @@ reporte_credito(idx,nombrenuevo,auxPagos){
      .then((response)=>{
          return response.json();
      }).then((costos)=>{
+        console.log("***********************costos-reporte_credito*****************************************");
          console.log("costos");
          console.log(costos);
          this.setState({costosP: costos})
@@ -1594,7 +1647,7 @@ reporte_credito(idx,nombrenuevo,auxPagos){
       .then((response)=>{
           return response.json();
       }).then((costos)=>{
-          console.log("costos");
+          console.log("***********************costos-reporte_ciclo*****************************************");
           console.log(costos);
           this.setState({costosP: costos})
       }) .catch(error=>{
@@ -1712,7 +1765,7 @@ FiltrarFecha(Fechas) {
       checkbox_:total,
       pageOfItems: pageOfItems });
 
-     console.log(pageOfItems)
+     console.log("los page of items son: ",pageOfItems)
   }
 
 
@@ -1830,6 +1883,7 @@ class Paginacion extends React.Component {
       this.setPage(this.props.initialPage);
     }
   }
+
   setPage(page) {
     var items = this.props.items;
     var pager = this.state.pager;

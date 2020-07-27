@@ -11,22 +11,15 @@ import AR_EstadoAsignacion from './AR_EstadoAsginacion'
 import AR_ProgramaAsignacion from './AR_ProgramaAsignacion'
 import AR_PendienteAsignacion from './AR_PendienteAsignacion';
 import AR_Transferencia from './AR_Transferencia';												  
-import ListaCuentasPorCobrar from './ListaCuentasPorCobrar';
-import ListaCuentasPorCobrar2 from './ListaCuentasPorCobrar2';
 
 const opciones = [
     { value: 'Búsqueda por nombre', label: 'Búsqueda por nombre' },
     { value: 'Búsqueda por recibo', label: 'Búsqueda por recibo' },
     { value: 'Pendiente de asignación', label: 'Pendiente de asignación' },
-    { value: 'Transferencia', label: 'Transferencia' },
-    { value: 'CuentasPorCobrar', label: 'Deudas' }, 
-    { value: 'Deudas con mas informacion', label: 'Deudas con informacion personal' }
+	{ value: 'Transferencia', label: 'Transferencia' }												  
 ];
 
-
-
 class BuscarNuevo extends React.Component {
-
 
     constructor(props) {
         super(props);
@@ -50,17 +43,6 @@ class BuscarNuevo extends React.Component {
             transf: false,									   
 
             mostrarResultadoAlumnos: false,
-
-            fechaDeInicio:'',
-            fechaDeFin:'',
-                
-            /* Cuentas por cobrar */ /*Sabado 8 de febrero del 2020 */
-            cuentasPorCobrar:false,
-            buscarCuentasPorCobrar:false,
-
-            deudasMasInfo:false,
-            buscarDeudasMasInfo:false,
-
 
             dni: '',
             codigo: '',
@@ -94,8 +76,6 @@ class BuscarNuevo extends React.Component {
             buscarPendiente: false,
         }
 
-        //Metodos 
-
         this.handleChange = this.handleChange.bind(this);
 
         this.handleChangeAlumno = this.handleChangeAlumno.bind(this);
@@ -108,8 +88,6 @@ class BuscarNuevo extends React.Component {
         this.onSubmitGuardar = this.onSubmitGuardar.bind(this);
         this.onSubmitReasignar = this.onSubmitReasignar.bind(this);
         this.onSubmitEliminar = this.onSubmitEliminar.bind(this);
-
-        this.onSubmitCuentasPorCobrar=this.onSubmitCuentasPorCobrar.bind(this);
 
         this.onChangeDni = this.onChangeDni.bind(this);
         this.onChangeCodigo = this.onChangeCodigo.bind(this);
@@ -126,13 +104,10 @@ class BuscarNuevo extends React.Component {
         this.getDetalleRecaudaciones = this.getDetalleRecaudaciones.bind(this);
 
         this.Validar = this.Validar.bind(this);
-        
 
     }
 
     handleChange = (selectedOption) => {
-        console.log(selectedOption);
-        
         if (selectedOption.value == 'Búsqueda por nombre') {
             this.setState({
                 value: selectedOption,
@@ -146,8 +121,6 @@ class BuscarNuevo extends React.Component {
                 buscarPendiente: false,
 				buscarTransferencia: false,						   
                 mostrarResultadoAlumnos: false,
-                cuentasPorCobrar:false,
-                deudasMasInfo:false
             });
             this.props.flag(false);
         } else if (selectedOption.value == 'Búsqueda por recibo') {
@@ -163,8 +136,6 @@ class BuscarNuevo extends React.Component {
                 buscarPendiente: false,
 				buscarTransferencia: false,						   
                 mostrarResultadoAlumnos: false,
-                cuentasPorCobrar:false,
-                deudasMasInfo:false
             });
             this.props.flag(false);
         } else if (selectedOption.value == 'Pendiente de asignación') {
@@ -180,8 +151,6 @@ class BuscarNuevo extends React.Component {
                 buscarPendiente: false,
                 buscarTransferencia: false,
                 mostrarResultadoAlumnos: false,
-                cuentasPorCobrar:false,
-                deudasMasInfo:false
             });
             this.props.flag(false);
         }
@@ -199,52 +168,7 @@ class BuscarNuevo extends React.Component {
                 buscarPendiente: false,
                 buscarTransferencia: false,		   
                 mostrarResultadoAlumnos: false,
-                cuentasPorCobrar:false,
-                deudasMasInfo:false
             });
-            this.props.flag(false);
-        }
-        else if (selectedOption.value == 'CuentasPorCobrar') {
-            this.setState({
-                value: selectedOption,
-                nomB: false,
-                recB: false,
-                buscarRecAlum: false,
-                posgradoB: false,
-                transf: false,
-                buscarRec: false,
-                asignarRec: false,
-                buscarPendiente: false,
-                buscarTransferencia: false,		   
-                mostrarResultadoAlumnos: false,
-                cuentasPorCobrar:true,
-                deudasMasInfo:false
-            })
-
-            console.log("Se hara la configuracion del state para buscar por ese algo");
-            
-            this.props.flag(false);
-        }
-        
-        else if (selectedOption.value == 'Deudas con mas informacion') {
-            this.setState({
-                value: selectedOption,
-                nomB: false,
-                recB: false,
-                buscarRecAlum: false,
-                posgradoB: false,
-                transf: false,
-                buscarRec: false,
-                asignarRec: false,
-                buscarPendiente: false,
-                buscarTransferencia: false,		   
-                mostrarResultadoAlumnos: false,
-                cuentasPorCobrar:false,
-                deudasMasInfo:true,
-            })
-
-            console.log("Se hara la configuracion del state para buscar por ese algo");
-            
             this.props.flag(false);
         }
     }
@@ -270,8 +194,6 @@ class BuscarNuevo extends React.Component {
                 buscarRec: false,
                 asignarRec: false,
                 mostrarResultadoAlumnos: false,
-                buscarCuentasPorCobrar:false,
-                cuentasPorCobrar:false,
                 estado: false,
                 alumno: null,
                 opcAlumno: [],
@@ -375,7 +297,6 @@ class BuscarNuevo extends React.Component {
                 buscarRec: false,
                 asignarRec: false,
                 mostrarResultadoAlumnos: false,
-                cuentasPorCobrar:false,
                 estado: false,
                 alumno: null,
                 opcAlumno: [],
@@ -481,7 +402,6 @@ class BuscarNuevo extends React.Component {
                 buscarTransferencia: false,										   
                 buscarRecAlum: false,
                 buscarRec: false,
-                cuentasPorCobrar:false,
                 asignarRec: false,
                 estado: false,
                 alumno: null,
@@ -605,16 +525,9 @@ class BuscarNuevo extends React.Component {
         e.preventDefault();
     }
 
-    setField(e) {
-        this.setState({ [e.target.name]: e.target.value })
-    }
-
    onSubmitTransferencia = (e) => {  /* an */
         var fechaInicio = this.fechaInicio.value;
-        
         var fechaFin = this.fechaFin.value;
-        console.log(fechaInicio);
-        console.log(fechaFin);
 
         if (!fechaInicio && !fechaFin) {
             swal("Ingrese la fecha a buscar", " ", "info");
@@ -629,7 +542,6 @@ class BuscarNuevo extends React.Component {
                 buscarTransferencia: true,
                 buscarRecAlum: false,
                 buscarRec: false,
-                cuentasPorCobrar:false,
                 transf: true,
                 asignarRec: false,
                 estado: false,
@@ -725,113 +637,6 @@ class BuscarNuevo extends React.Component {
 
         e.preventDefault();
     }
-
-    //Submit que se enviara para hacer la peticion
-    onSubmitCuentasPorCobrar(e)
-    {
-        var fechaInicio = this.fechaInicio.value
-        var fechaFin = this.fechaFin.value
-
-        console.log("***** ",fechaInicio);
-        console.log("***** ",fechaFin);
-
-        if (!fechaInicio && !fechaFin) {
-            swal("Ingrese la fecha a buscar", " ", "info");
-        } else {
-            this.setState({
-                objRecaudaciones: [],
-
-                objAlumnos: [],
-                ObjAsignación: [],
-                posgradoB: false,
-                buscarPendiente: false,
-                buscarTransferencia: false,
-                buscarCuentasPorCobrar:true,
-
-                buscarDeudasMasInfo:false,
-                
-                buscarRecAlum: false,
-                buscarRec: false,
-                transf: false,
-                asignarRec: false,
-                estado: false,
-                alumno: null,
-                opcAlumno: [],
-                dni: '',
-                codigo: '',
-                apePat: '',
-                apeMat: '',
-                nombre: '',
-                observacion: '',
-            })
-            fetch(CONFIG + 'recaudaciones/cuentasPorCobrar/' + fechaInicio + '/' + fechaFin)/*PONER PARAMETROS LAS FECHAS Y LISTO*/
-                .then((response) => {
-                    return response.json();
-                })
-                .then((respuesta) => {
-                    console.log(respuesta);
-                    this.setState({
-                        objObservacion:respuesta
-                    })
-                })
-        }
-        e.preventDefault();
-    }
-
-    /*
-    * Se ha agregado lunes 17 de Febrero del 2019
-    */
-    DeudasMasInfo=(e)=>
-    {
-        var fechaInicio = this.fechaInicio.value
-        var fechaFin = this.fechaFin.value
-
-        console.log("***** ",fechaInicio);
-        console.log("***** ",fechaFin);
-
-        if (!fechaInicio && !fechaFin) {
-            swal("Ingrese la fecha a buscar", " ", "info");
-        } else {
-            this.setState({
-                objRecaudaciones: [],
-
-                objAlumnos: [],
-                ObjAsignación: [],
-                posgradoB: false,
-                buscarPendiente: false,
-                buscarTransferencia: false,
-                buscarCuentasPorCobrar:false,
-
-                buscarDeudasMasInfo:true,
-
-                buscarRecAlum: false,
-                buscarRec: false,
-                transf: false,
-                asignarRec: false,
-                estado: false,
-                alumno: null,
-                opcAlumno: [],
-                dni: '',
-                codigo: '',
-                apePat: '',
-                apeMat: '',
-                nombre: '',
-                observacion: '',
-            })
-            fetch(CONFIG + 'recaudaciones/cuentasPorCobrar2/' + fechaInicio + '/' + fechaFin)/*PONER PARAMETROS LAS FECHAS Y LISTO*/
-                .then((response) => {
-                    return response.json();
-                })
-                .then((respuesta) => {
-                    console.log(respuesta);
-                    this.setState({
-                        objObservacion:respuesta
-                    })
-                })
-        }
-        e.preventDefault();
-    }
-
 
     getDetalleTransferencia = (objRec) => { /* an */
         let objRecibo_estado;
@@ -1077,7 +882,7 @@ class BuscarNuevo extends React.Component {
                                             <td className="td1">{this.state.detalleRecaudaciones.moneda}</td>
                                             <td className="td1">{this.state.detalleRecaudaciones.importe}</td>
                                             <td className="td1">{this.state.detalleRecaudaciones.fecha}</td>
-																																						  
+											<td className="td1">{this.state.detalleRecaudaciones.observacion}</td>																												  
 
                                             <td className="td1">
                                                 <AR_CodigoAsignacion codAlum={this.state.detalleRecaudaciones.codAlumno} />
@@ -1161,13 +966,11 @@ class BuscarNuevo extends React.Component {
                         ) : (null)}
                     </div>
 
-                    ) : (null)
-                }
+                ) : (null)}
 
                 {this.state.transf ? (
                     <div>
                         <form>
-                           
                             <div className="SplitPane row">
                                 <div className="col-xs-3 margen2">
                                     <input ref={(input) => this.fechaInicio = input} type="date" maxLength="100" placeholder="Fecha de Inicio" />
@@ -1188,80 +991,10 @@ class BuscarNuevo extends React.Component {
                             <div>
                                 <AR_Transferencia listObservacion={this.state.objObservacion} />
                             </div>
-                            ) : (null)}
-                        </div>
-                    ) : (null)
-                }
-                {this.state.cuentasPorCobrar ? (
-                    <div>
-                        <form>
-                           
-                            <div className="SplitPane row">
-                                <div className="col-xs-3 margen2">
-                                    <input ref={(input) => this.fechaInicio = input} name="fechaDeInicio" value={this.state.fechaDeInicio} onChange={e=>this.setField(e)} type="date" maxLength="100" placeholder="Fecha de Inicio" />
-                                </div>
-                                <div className="col-xs-3 margen2">
-                                    <input ref={(input) => this.fechaFin = input} name="fechaDeFin" value={this.state.fechaDeFin} onChange={e=>this.setField(e)} type="date" maxLength="100" placeholder="Fecha de Fin" />
-                                </div>
-                                <div className="col-xs-2 margen2">
-                                    <button className="waves-effect waves-light btn-large center" type="submit" onClick={this.onSubmitCuentasPorCobrar}>
-                                        Buscar
-                                        <i className="large material-icons left">search</i>
-                                    </button>
-
-                                    <a className="waves-effect waves-light btn-large center" href={CONFIG+`recaudaciones/cuentasPorCobrar/exportExcel/${this.state.fechaDeInicio}/${this.state.fechaDeFin}`} >
-                                         Excel 
-                                         <i className="large material-icons left">import_export</i>
-                                         
-                                    </a>
-                                </div>
-                            </div>
-                        </form>
-                        {this.state.buscarCuentasPorCobrar ? (
-                            <div>
-                                <ListaCuentasPorCobrar listaCuentasPorCobrar={this.state.objObservacion} />
-                            </div>
-                            ) : (null)
-                        }
-                        
+                        ) : (null)}
                     </div>
-                ):(null)}
-                
-                {this.state.deudasMasInfo ? (
-                    <div>
-                        <form>
-                           
-                            <div className="SplitPane row">
-                                <div className="col-xs-3 margen2">
-                                    <input ref={(input) => this.fechaInicio = input} name="fechaDeInicio" value={this.state.fechaDeInicio} onChange={e=>this.setField(e)} type="date" maxLength="100" placeholder="Fecha de Inicio" />
-                                </div>
-                                <div className="col-xs-3 margen2">
-                                    <input ref={(input) => this.fechaFin = input} name="fechaDeFin" value={this.state.fechaDeFin} onChange={e=>this.setField(e)} type="date" maxLength="100" placeholder="Fecha de Fin" />
-                                </div>
-                                <div className="col-xs-2 margen2">
-                                    <button className="waves-effect waves-light btn-large center" type="submit" onClick={this.DeudasMasInfo}>
-                                        Buscar
-                                        <i className="large material-icons left">search</i>
-                                    </button>
-
-                                     <a className="waves-effect waves-light btn-large center" href={CONFIG+`recaudaciones/cuentasPorCobrar2/exportExcelMasInfoPersonal/${this.state.fechaDeInicio}/${this.state.fechaDeFin}`} > 
-                                      Excel
-                                     <i className="large material-icons left">import_export</i>
-                                      </a> 
-                                </div>
-                            </div>
-                        </form>
-                        {this.state.buscarDeudasMasInfo ? (
-                            <div>
-                                
-                                <ListaCuentasPorCobrar2 listaCuentasPorCobrar={this.state.objObservacion} />
-                            </div>
-                            ) : (null)
-                        }
-                        
-                    </div>
-                ):(null)}
-				                <hr />
+                ) : (null)}
+                <hr />
                 {this.state.asignarRec ? (
                     <div>
                         <div className="row justify-content-md-center">
@@ -1272,21 +1005,15 @@ class BuscarNuevo extends React.Component {
                                 <input className="autoomplete" value={this.state.codigo} onChange={this.onChangeCodigo} placeholder="Código"></input>
                             </div>
                         </div>
-					
                         <div className="row justify-content-md-center">
-						  
                             <div className="col col-lg-2">
                                 <input className="autocomplete" value={this.state.apePat} onChange={this.onChangeApePaterno} placeholder="Apellido paterno"></input>
-							
                             </div>
                             <div className="col col-lg-2">
                                 <input className="autocomplete" value={this.state.apeMat} onChange={this.onChangeApeMaterno} placeholder="Apellido materno"></input>
-																						   
                             </div>
                             <div className="col col-lg-2">
-																  
                                 <input className="autocomplete" value={this.state.nombre} onChange={this.onChangeNombre} placeholder="Nombres"></input>
-								
                             </div>
                         </div>
                         <br />
@@ -1297,8 +1024,6 @@ class BuscarNuevo extends React.Component {
                                 </button>
                             </div>
                         </div>
-						 
-						
                     </div>
                 ) : (null)}
             </div>

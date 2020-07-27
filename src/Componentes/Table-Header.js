@@ -14,10 +14,12 @@ class TableHeader extends React.Component {
         <th className="th">FECHA</th>
         <th className="th ancho">MONEDA</th>
         <th className="th">IMPORTE</th>
+        <th className="th ancho" id = "tipo_recaudacion_header" style={{display: 'none'}}>TIPO RECAUDACION</th>
         <th className="th" id = "banco_header" style={{display: 'none'}}>CTA BANCO</th>
         <th className="th ancho" id = "ubicacion_header" style={{display: 'none'}}>UBICACION</th>
         <th className="th" id = "validar_header">VALIDAR</th>
-        <th className="th" id = "search_header">OBSV</th>
+        <th className="th" id = "search_header">OBS.UPG</th>
+        <th className="th" id = "show_header_EC">OBS.EC</th>
         <th className="th" id = "edit_header">EDITAR</th>
         <th className="th" id = "save_header">GUARDAR</th>
         <th className="th">TIPO</th>

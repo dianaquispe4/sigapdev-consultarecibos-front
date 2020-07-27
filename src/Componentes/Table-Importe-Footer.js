@@ -14,32 +14,37 @@ class TableImporteFooter extends React.Component {
     
 
   render() {
+    let tipoMoneda= this.props.tipoMoneda;
+    let simboloMoneda = (tipoMoneda == "108") ? 'S/.' : '$' ;
+    let deuda= this.props.costo-this.props.total
     return(
-    <thead>
+
 			
-    
+      <React.Fragment>
       
-      <tr>      
-        
-        <th className="thVacio"></th>
-        <th className="thVacio"></th>
-        <th className="thVacio"></th>
-        <th className="th">TOTAL</th>
-        <th className="inputImporte">S/. {this.props.total}</th>
-        <th className="thVacio"></th>
-        
-      </tr>
-      <tr>      
-        
-        <th className="thVacio"></th>
-        <th className="thVacio"></th>
-        <th className="thVacio"></th>
-        <th className="th">DEUDA ACTUAL</th>
-        <th className="inputDeuda">S/. {this.props.costo-this.props.total}</th>
-        <th className="thVacio"></th>
-        
-      </tr>
-	</thead>
+          <tr>      
+            
+            <th className="thVacio"></th>
+            <th className="thVacio"></th>
+            <th className="thVacio"></th>
+            <th className="thVacio"></th>
+            <th className="th">TOTAL</th>
+            <th className="inputImporte">{simboloMoneda} {this.props.total}</th>
+            <th className="thVacio"></th>
+            
+          </tr>
+          <tr>      
+            
+            <th className="thVacio"></th>
+            <th className="thVacio"></th>
+            <th className="thVacio"></th>
+            <th className="thVacio"></th>
+            <th className="th">DEUDA ACTUAL</th>
+            <th className="inputDeuda">{simboloMoneda} {(this.props.costo-this.props.total).toFixed(2)}</th>
+            <th className="thVacio"></th>
+            
+          </tr>
+      </React.Fragment>
     )
   }
 }
